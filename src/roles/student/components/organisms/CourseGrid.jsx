@@ -24,8 +24,8 @@ const CourseGrid = () => {
   );
 
   return (
-    // Envolvemos todo en un div para posicionar la barra de búsqueda
-    <div className="p-8">
+  // Envolvemos todo en un div para posicionar la barra de búsqueda
+  <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-8"> {/* Contenedor para la barra de búsqueda con margen inferior */}
         <SearchBar
           value={searchTerm}
@@ -38,6 +38,7 @@ const CourseGrid = () => {
         {filteredCourses.map(course => (
           <CourseCard
             key={course.id}
+            id={course.id}
             title={course.title}
             progress={course.progress}
             imageUrl={course.imageUrl}

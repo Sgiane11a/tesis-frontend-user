@@ -15,20 +15,27 @@ const navLinks = [
 const Sidebar = () => {
   const location = useLocation();
 
+  const pathname = location.pathname;
+
   return (
     <aside className="w-60 bg-surface p-6 flex flex-col gap-8 border-r border-gray-200/80 h-screen fixed">
       <Logo />
       <nav className="flex flex-col gap-2">
-        {navLinks.map((link) => (
-          // Usamos `startsWith` para que el enlace se mantenga activo si hay sub-rutas
-          <NavItem
-            key={link.label}
-            iconName={link.iconName}
-            label={link.label}
-            to={link.to}
-            active={location.pathname.startsWith(link.to)}
-          />
-        ))}
+        {navLinks.map((link) => {
+          // Para Dashboard consideramos también rutas de cursos como parte de dashboard
+          const isDashboard = link.to === '/student/dashboard' && (pathname.startsWith('/student/dashboard') || pathname.startsWith('/student/course'));
+          const active = isDashboard ? true : pathname.startsWith(link.to);
+
+          return (
+            <NavItem
+              key={link.label}
+              iconName={link.iconName}
+              label={link.label}
+              to={link.to}
+              active={active}
+            />
+          );
+        })}
       </nav>
     </aside>
   );

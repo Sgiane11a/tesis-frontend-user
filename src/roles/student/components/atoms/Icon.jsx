@@ -12,8 +12,10 @@ import {
   MonitorPlay,
   FileText, 
   MessageSquare, 
+  MoreVertical,
   Sparkles, 
   ChevronUp, 
+  ChevronDown,
   Mic, 
   Send,
   X,
@@ -58,10 +60,15 @@ const iconMap = {
   'file-text': FileText,
   sparkles: Sparkles,
   'chevron-up': ChevronUp,
+  'chevron-down': ChevronDown,
+  'chevrons-up': ChevronUp,
+  'chevrons-down': ChevronDown,
   mic: Mic,
   send: Send,
   'panel-open': PanelRightOpen,
   'panel-close': PanelRightClose,
+  'more-vertical': MoreVertical,
+  more: MoreVertical,
   
   // FAQ y Temas
   lightbulb: Lightbulb,
@@ -79,13 +86,20 @@ const iconMap = {
   'book-open': BookOpen,
   'check-circle': CheckCircle,
   'heart-pulse': HeartPulse, // Añadido
+  // Tipos de archivo específicos
+  pdf: FileText,
+  ppt: BookOpen,
+  word: Book,
+  video: MonitorPlay,
 };
 
 const Icon = ({ name, size = 20, className }) => {
   const LucideIcon = iconMap[name];
   if (!LucideIcon) {
-    // Es buena práctica mostrar un error en la consola si un icono no se encuentra
-    console.warn(`Icono no encontrado: "${name}"`);
+    // Mostrar advertencia solo en desarrollo para no llenar la consola en producción
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`Icono no encontrado: "${name}"`);
+    }
     return null; 
   }
   return <LucideIcon size={size} className={className} />;

@@ -19,3 +19,22 @@ html {
      Esto hará que las unidades 'rem' sean más grandes y todo el texto escale. */
   font-size: 14px; 
 }
+
+/* Scrollbar más delgada para elementos con clase .thin-scroll */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(156,163,175,0.7); /* gris claro */
+  border-radius: 9999px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Firefox */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156,163,175,0.7) transparent; /* gris claro */
+}
