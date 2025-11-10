@@ -51,7 +51,6 @@ const iconMap = {
   // Generales
   search: Search,
   book: Book,
-  video: MonitorPlay, // Asegúrate de que este es el nombre correcto, la imagen usa 'monitor-play'
   test: FileText,
   chat: MessageSquare,
   x: X,
