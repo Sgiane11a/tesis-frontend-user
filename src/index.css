@@ -20,6 +20,11 @@ html {
   font-size: 14px; 
 }
 
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
 /* Scrollbar más delgada para elementos con clase .thin-scroll */
 .thin-scroll::-webkit-scrollbar {
   width: 6px;

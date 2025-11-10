@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 min-h-[90vh] flex items-center overflow-hidden">
+  <section id="inicio" style={{scrollMarginTop: '4rem'}} className="w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-16 md:pt-20 lg:pt-24 pb-12 md:pb-16 lg:pb-20 min-h-[90vh] flex items-center overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Contenido de texto */}

@@ -35,7 +35,7 @@ export default function AITutorSection() {
   ];
 
   return (
-    <section className="w-full py-20 bg-white">
+  <section id="ia-educativa" style={{scrollMarginTop: '4rem'}} className="w-full py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título principal */}
         <div className="text-center mb-16">
