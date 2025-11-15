@@ -1,6 +1,8 @@
 ﻿import React from "react";
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
+import { FaRobot } from 'react-icons/fa';
+import { Text } from '../../roles/student/components/atoms/Text';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -33,13 +35,12 @@ export default function Header() {
           {/* Logo y nombre */}
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5zM10.5 17L7 13.5l1.5-1.5L10.5 14l5.5-5.5L17.5 10 10.5 17z" />
-              </svg>
+                                      <FaRobot className="w-6 h-6 text-white" aria-hidden="true" />
+
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">EduIA</h1>
-              <p className="text-xs text-gray-600">Plataforma Educativa</p>
+              <h1 className="text-xl font-bold text-gray-900">EDUI IA</h1>
+              <p className="text-xs text-blue-600">APRENDE SIN LÍMITES</p>
             </div>
           </div>
 
