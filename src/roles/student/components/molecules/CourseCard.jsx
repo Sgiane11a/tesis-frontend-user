@@ -1,62 +1,79 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
 import { ProgressBar } from '../atoms/ProgressBar';
 import { Icon } from '../atoms/Icon';
-import { Avatar } from '../atoms/Avatar';
 import { Button } from '../atoms/Button';
 
-const CourseCard = ({ id, title, progress, imageUrl, teacher, year }) => {
+/** Imagen placeholder educativa cuando el curso no tiene imagen */
+const DEFAULT_COURSE_IMG = null;
+
+const CourseCard = ({ id, title, description, progress = 0, imageUrl }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleEnter = () => {
-    // Navegar a la página del curso
-    // Si estamos ya dentro de /student usamos ruta relativa para respetar el routing anidado
     const inStudent = location.pathname.startsWith('/student');
     const target = inStudent ? `course/${id}` : `/student/course/${id}`;
-    // debug: navegación interna — deshabilitado en producción
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[CourseCard] navigating to', target, 'from', location.pathname);
-    }
     navigate(target);
   };
+
+  const hasImage = !!imageUrl;
+
   return (
-    <Card className="overflow-hidden">
-      <div className="w-full h-44 bg-gray-100">
-        <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+    <Card className="overflow-hidden group hover:shadow-xl transition-shadow duration-300">
+      {/* Imagen o placeholder con icono */}
+      <div className="w-full h-44 bg-gradient-to-br from-primary-light to-indigo-100 relative overflow-hidden">
+        {hasImage ? (
+          <img
+            src={imageUrl}
+            alt={title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <BookOpen className="w-16 h-16 text-primary/40" strokeWidth={1.2} />
+          </div>
+        )}
       </div>
 
-      <div className="p-5 flex flex-col gap-4">
-        <div>
-          <Text as="h3" size="lg" weight="semibold" className="leading-tight">{title}</Text>
-          <div className="flex items-center gap-3 mt-3">
-            <Avatar name={teacher} size={'8'} />
-            <div>
-              <Text size="sm" weight="medium">{teacher}</Text>
-              <Text size="sm" color="muted">{year}</Text>
-            </div>
-          </div>
+      <div className="p-5 flex flex-col gap-4 flex-1">
+        {/* Título y descripción */}
+        <div className="min-h-[4.5rem]">
+          <Text as="h3" size="lg" weight="semibold" className="leading-tight line-clamp-2">
+            {title}
+          </Text>
+          {description && (
+            <Text size="sm" color="muted" className="mt-1.5 line-clamp-2">
+              {description}
+            </Text>
+          )}
         </div>
 
-        <div>
+        {/* Barra de progreso — anclada al fondo */}
+        <div className="mt-auto">
           <div className="flex items-center justify-between gap-4">
             <div className="flex-1">
               <ProgressBar progress={progress} />
             </div>
             <div className="w-14 text-right">
-              <Text size="sm" weight="semibold">{progress}%</Text>
+              <Text size="sm" weight="semibold" color="primary">{progress}%</Text>
             </div>
           </div>
         </div>
 
-        <div className="pt-2 flex items-center gap-3">
-            <div className="flex-1">
-            <Button variant="primary" className="w-full" onClick={handleEnter}>Entrar</Button>
+        {/* Acciones */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <Button variant="primary" className="w-full" onClick={handleEnter}>
+              Entrar al curso
+            </Button>
           </div>
           <div>
-            <button className="w-12 h-12 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm">
+            <button className="w-12 h-12 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
               <Icon name="chat" />
             </button>
           </div>

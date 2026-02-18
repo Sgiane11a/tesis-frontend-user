@@ -5,7 +5,7 @@ const Card = ({ children, className }) => {
     // - Sin borde visible (`border-none`).
     // - Sombra más pronunciada y moderna (`shadow-lg`).
     // - Transición suave para efectos hover (`transition-shadow`).
-    <div className={`bg-surface rounded-xl shadow-lg border border-gray-200/80 overflow-hidden ${className || ''}`}>
+    <div className={`bg-surface rounded-xl shadow-lg border border-gray-200/80 overflow-hidden flex flex-col h-full ${className || ''}`}>
       {children}
     </div>
   );

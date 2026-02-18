@@ -6,15 +6,6 @@ export const userData = {
     avatarUrl: "https://i.pravatar.cc/150?u=alejandra" // Un avatar de ejemplo
 };
 
-export const coursesData = [
-    { id: 1, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia1/400/200" },
-    { id: 2, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia2/400/200" },
-    { id: 3, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia3/400/200" },
-    { id: 4, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia4/400/200" },
-    { id: 5, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia5/400/200" },
-    { id: 6, title: "Historia del Perú - 1er Año", progress: 65, imageUrl: "https://picsum.photos/seed/historia6/400/200" },
-];
-
 export const navLinks = [
     { id: 'dash', label: 'Dashboard', iconName: 'dashboard', path: '/student/dashboard' },
     { id: 'ia', label: 'IA general', iconName: 'ia', path: '/student/ia' },

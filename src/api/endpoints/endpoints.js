@@ -6,4 +6,8 @@ export const endpoints = {
     byId: (id) => `/usuarios/${id}`,
     cursosDeAlumno: (id) => `/usuarios/${id}/cursos`,
   },
+  courses: {
+    list: '/cursos',
+    byId: (id) => `/cursos/${id}`,
+  },
 }
