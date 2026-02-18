@@ -10,6 +10,9 @@ export function backendToCourse(raw) {
     title: raw.nombre ?? '',
     description: raw.descripcion ?? '',
     imageUrl: raw.url_imagen || null,
+    idAula: raw.id_aula ?? null,
+    grado: raw.grado ?? null,
+    seccion: raw.seccion ?? null,
   }
 }
 

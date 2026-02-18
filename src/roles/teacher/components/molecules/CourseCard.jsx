@@ -1,14 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Users, BarChart3, ArrowRight } from 'lucide-react';
-import { Card, Text, ProgressBar } from '../atoms';
+import { BookOpen, Users, BarChart3, ArrowRight, GraduationCap } from 'lucide-react';
+import { Card, Text, ProgressBar, Badge } from '../atoms';
 
-const CourseCard = ({ id, title, description, imageUrl, studentCount = 0, averageScore = 0, progress = 0 }) => {
+const gradoLabels = {
+  1: '1er Año',
+  2: '2do Año',
+  3: '3er Año',
+  4: '4to Año',
+  5: '5to Año',
+};
+
+const CourseCard = ({ id, title, description, imageUrl, grado, seccion, studentCount = 0, averageScore = 0, progress = 0 }) => {
   const navigate = useNavigate();
 
   const handleEnter = () => {
     navigate(`/teacher/dashboard/course/${id}`);
   };
+
+  const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
 
   return (
     <div className="transition-transform duration-300 hover:-translate-y-1">
@@ -25,6 +35,15 @@ const CourseCard = ({ id, title, description, imageUrl, studentCount = 0, averag
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <BookOpen className="w-14 h-14 text-primary/25" strokeWidth={1.2} />
+            </div>
+          )}
+          {/* Badge grado + sección sobre la imagen */}
+          {gradoLabel && seccion && (
+            <div className="absolute top-3 left-3">
+              <Badge color="primary" size="sm" className="bg-white/90 backdrop-blur-sm text-primary-dark shadow-sm">
+                <GraduationCap className="w-3.5 h-3.5" />
+                {gradoLabel} - {seccion}
+              </Badge>
             </div>
           )}
           {/* Overlay con gradiente */}

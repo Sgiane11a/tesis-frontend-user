@@ -15,7 +15,8 @@ const CourseGrid = () => {
     return courses.filter(
       (c) =>
         c.title.toLowerCase().includes(term) ||
-        (c.description && c.description.toLowerCase().includes(term))
+        (c.description && c.description.toLowerCase().includes(term)) ||
+        (c.seccion && c.seccion.toLowerCase().includes(term))
     );
   }, [courses, searchTerm]);
 
@@ -72,11 +73,13 @@ const CourseGrid = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <CourseCard
-              key={course.id}
+              key={`${course.id}-${course.idAula}`}
               id={course.id}
               title={course.title}
               description={course.description}
               imageUrl={course.imageUrl}
+              grado={course.grado}
+              seccion={course.seccion}
               studentCount={course.studentCount ?? 0}
               averageScore={course.averageScore ?? 0}
               progress={course.progress ?? 0}
