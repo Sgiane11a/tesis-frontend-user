@@ -8,3 +8,4 @@ export { ProgressBar } from './ProgressBar';
 export { Badge } from './Badge';
 export { Skeleton } from './Skeleton';
 export { Input } from './Input';
+export { TabButton } from './TabButton';

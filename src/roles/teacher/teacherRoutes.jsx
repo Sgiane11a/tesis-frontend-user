@@ -2,12 +2,22 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { TeacherMainLayout } from './layouts/TeacherMainLayout';
 import TeacherDashboardPage from './pages/TeacherDashboardPage';
+import CourseDetailPage from './pages/CourseDetailPage';
+import CourseModulesPage from './pages/CourseModulesPage';
+import CourseSectionPage from './pages/CourseSectionPage';
 
 export function TeacherRoutes() {
   return (
     <TeacherMainLayout>
       <Routes>
         <Route path="dashboard" element={<TeacherDashboardPage />} />
+        {/* Detalle del curso (overview) */}
+        <Route path="dashboard/course/:courseId" element={<CourseDetailPage />} />
+        {/* Secciones del curso */}
+        <Route path="dashboard/course/:courseId/modulos" element={<CourseModulesPage />} />
+        <Route path="dashboard/course/:courseId/estudiantes" element={<CourseSectionPage section="estudiantes" />} />
+        <Route path="dashboard/course/:courseId/chatia" element={<CourseSectionPage section="chatia" />} />
+        <Route path="dashboard/course/:courseId/informacion" element={<CourseSectionPage section="informacion" />} />
         {/* Futuras rutas del profesor */}
         <Route path="ia" element={<PlaceholderPage title="IA General" />} />
         <Route path="informes" element={<PlaceholderPage title="Informes" />} />
