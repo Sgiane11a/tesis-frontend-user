@@ -2,11 +2,13 @@
 import { Button } from "../ui/button";
 import { useState, useEffect } from "react";
 import { FaRobot } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { Text } from '../../roles/student/components/atoms/Text';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("inicio");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const ids = ["inicio", "como-funciona", "caracteristicas", "ia-educativa"];
@@ -129,7 +131,7 @@ export default function Header() {
             </button>
 
             <div className="hidden md:block">
-              <Button className="bg-gray-900 hover:bg-gray-800 text-white px-6">Iniciar Sesión</Button>
+              <Button onClick={() => navigate('/login')} className="bg-gray-900 hover:bg-gray-800 text-white px-6">Iniciar Sesión</Button>
             </div>
           </div>
         </div>
@@ -179,7 +181,7 @@ export default function Header() {
                 IA educativa
               </a>
               <div className="pt-2">
-                <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white">Iniciar Sesión</Button>
+                <Button onClick={() => { setOpen(false); navigate('/login'); }} className="w-full bg-gray-900 hover:bg-gray-800 text-white">Iniciar Sesión</Button>
               </div>
             </div>
           </div>

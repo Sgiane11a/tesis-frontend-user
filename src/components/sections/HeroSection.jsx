@@ -1,8 +1,10 @@
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   return (
   <section id="inicio" style={{scrollMarginTop: '4rem'}} className="w-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 pt-16 md:pt-20 lg:pt-24 pb-12 md:pb-16 lg:pb-20 min-h-[90vh] flex items-center overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,6 +36,7 @@ export default function HeroSection() {
             {/* Botón de acción */}
             <Button 
               size="lg" 
+              onClick={() => navigate('/login')}
               className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 text-lg group"
             >
               Comenzar Ahora
