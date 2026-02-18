@@ -27,4 +27,18 @@ export const CoursesService = {
       cursos: backendToCourseList(data.cursos),
     }
   },
+
+  /**
+   * Obtiene los cursos impartidos por un profesor.
+   * GET /api/cursos/profesores/:id/cursos
+   * @param {number|string} profesorId
+   * @returns {Promise<{ profesor: object, cursos: Array }>}
+   */
+  async getByTeacher(profesorId) {
+    const data = await apiClient(endpoints.courses.byTeacher(profesorId))
+    return {
+      profesor: data.profesor ?? null,
+      cursos: backendToCourseList(data.cursos_impartidos),
+    }
+  },
 }

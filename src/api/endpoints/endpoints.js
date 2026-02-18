@@ -9,5 +9,6 @@ export const endpoints = {
   courses: {
     list: '/cursos',
     byId: (id) => `/cursos/${id}`,
+    byTeacher: (id) => `/cursos/profesores/${id}/cursos`,
   },
 }

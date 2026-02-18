@@ -6,6 +6,7 @@ import { useAuth } from './useAuth'
 export const courseKeys = {
   all: ['courses'],
   byStudent: (id) => ['courses', 'student', id],
+  byTeacher: (id) => ['courses', 'teacher', id],
 }
 
 /**
@@ -23,6 +24,23 @@ export function useStudentCourses() {
     staleTime: 5 * 60 * 1000,     // 5 min antes de refetch
     retry: 2,
     select: (data) => data.cursos, // Solo exponemos la lista de cursos
+  })
+}
+
+/**
+ * Hook para obtener los cursos impartidos por el profesor autenticado.
+ */
+export function useTeacherCourses() {
+  const { user } = useAuth()
+  const profesorId = user?.id
+
+  return useQuery({
+    queryKey: courseKeys.byTeacher(profesorId),
+    queryFn: () => CoursesService.getByTeacher(profesorId),
+    enabled: !!profesorId,
+    staleTime: 5 * 60 * 1000,
+    retry: 2,
+    select: (data) => data.cursos,
   })
 }
 
