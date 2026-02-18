@@ -13,6 +13,7 @@ export function backendToCourse(raw) {
     idAula: raw.id_aula ?? null,
     grado: raw.grado ?? null,
     seccion: raw.seccion ?? null,
+    studentCount: raw.total_estudiantes ?? 0,
   }
 }
 
