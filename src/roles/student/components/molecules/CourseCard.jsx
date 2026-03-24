@@ -1,16 +1,24 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Users, BarChart3, ArrowRight, GraduationCap } from 'lucide-react';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
 import { ProgressBar } from '../atoms/ProgressBar';
+import { Badge } from '../atoms/Badge';
 import { Icon } from '../atoms/Icon';
-import { Button } from '../atoms/Button';
 
 /** Imagen placeholder educativa cuando el curso no tiene imagen */
 const DEFAULT_COURSE_IMG = null;
 
-const CourseCard = ({ id, title, description, progress = 0, imageUrl }) => {
+const gradoLabels = {
+  1: '1er Año',
+  2: '2do Año',
+  3: '3er Año',
+  4: '4to Año',
+  5: '5to Año',
+};
+
+const CourseCard = ({ id, title, description, progress = 0, imageUrl, grado, seccion, studentCount = 0, averageScore = 0 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,66 +28,99 @@ const CourseCard = ({ id, title, description, progress = 0, imageUrl }) => {
     navigate(target);
   };
 
+  const handleChat = () => {
+    const inStudent = location.pathname.startsWith('/student');
+    const target = inStudent ? `course/${id}/chat` : `/student/course/${id}/chat`;
+    navigate(target);
+  };
+
+  const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
+
   const hasImage = !!imageUrl;
 
   return (
-    <Card className="overflow-hidden group hover:shadow-xl transition-shadow duration-300">
-      {/* Imagen o placeholder con icono */}
-      <div className="w-full h-44 bg-gradient-to-br from-primary-light to-indigo-100 relative overflow-hidden">
-        {hasImage ? (
-          <img
-            src={imageUrl}
-            alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <BookOpen className="w-16 h-16 text-primary/40" strokeWidth={1.2} />
-          </div>
-        )}
-      </div>
-
-      <div className="p-5 flex flex-col gap-4 flex-1">
-        {/* Título y descripción */}
-        <div className="min-h-[4.5rem]">
-          <Text as="h3" size="lg" weight="semibold" className="leading-tight line-clamp-2">
-            {title}
-          </Text>
-          {description && (
-            <Text size="sm" color="muted" className="mt-1.5 line-clamp-2">
-              {description}
-            </Text>
+    <div className="transition-transform duration-300 hover:-translate-y-1">
+      <Card className="h-full group cursor-pointer" onClick={handleEnter}>
+        {/* Imagen del curso */}
+        <div className="relative h-40 bg-gradient-to-br from-primary-light via-indigo-50 to-blue-50 overflow-hidden">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <BookOpen className="w-14 h-14 text-primary/25" strokeWidth={1.2} />
+            </div>
           )}
+          {/* Badge grado + sección sobre la imagen */}
+          {gradoLabel && seccion && (
+            <div className="absolute top-3 left-3">
+              <Badge color="primary" size="sm" className="bg-white/90 backdrop-blur-sm text-primary-dark shadow-sm">
+                <GraduationCap className="w-3.5 h-3.5" />
+                {gradoLabel} - {seccion}
+              </Badge>
+            </div>
+          )}
+          {/* Overlay con gradiente */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
 
-        {/* Barra de progreso — anclada al fondo */}
-        <div className="mt-auto">
-          <div className="flex items-center justify-between gap-4">
+        {/* Contenido */}
+        <div className="p-5 flex flex-col gap-3 flex-1">
+          {/* Título */}
+          <div className="min-h-[2.5rem]">
+            <Text as="h3" size="lg" weight="semibold" className="leading-snug line-clamp-2">
+              {title}
+            </Text>
+            {description && (
+              <Text size="xs" color="muted" className="mt-1 line-clamp-1">
+                {description}
+              </Text>
+            )}
+          </div>
+
+          {/* Estadísticas */}
+          <div className="flex items-center gap-4 pt-1">
+            <div className="flex items-center gap-1.5">
+              <BarChart3 className="w-4 h-4 text-primary" />
+              <Text size="sm" weight="semibold" color="secondary">{averageScore}</Text>
+            </div>
             <div className="flex-1">
-              <ProgressBar progress={progress} />
+              <ProgressBar progress={progress} size="sm" />
             </div>
-            <div className="w-14 text-right">
-              <Text size="sm" weight="semibold" color="primary">{progress}%</Text>
-            </div>
+            <Text size="xs" weight="semibold" color="muted">{progress}%</Text>
           </div>
-        </div>
 
-        {/* Acciones */}
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <Button variant="primary" className="w-full" onClick={handleEnter}>
-              Entrar al curso
-            </Button>
-          </div>
-          <div>
-            <button className="w-12 h-12 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
-              <Icon name="chat" />
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-2 mt-auto border-t border-gray-50">
+            <div className="flex items-center gap-1.5 min-w-[100px]">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleChat();
+                }}
+                className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-50 shadow-sm transition-colors"
+              >
+                <Icon name="chat" className="w-4 h-4" />
+              </button>
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleEnter();
+              }}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-dark transition-colors group/btn"
+            >
+              Entrar
+              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
             </button>
           </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 };
 

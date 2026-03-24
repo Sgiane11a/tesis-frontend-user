@@ -1,16 +1,15 @@
-// src/roles/student/components/molecules/UserProfile.jsx
 import React from 'react';
 import { Avatar } from '../atoms/Avatar';
 import { Text } from '../atoms/Text';
 
-const UserProfile = ({ name, role }) => {
+const UserProfile = ({ name, role, avatarUrl }) => {
   return (
-    <div className="flex items-center gap-2.5">
-      <Avatar alt={name} />
-      <div className="text-right">
-        <Text size="sm" weight="semibold">{name}</Text>
-        <Text size="xs" color="muted">{role}</Text>
+    <div className="flex items-center gap-3">
+      <div className="text-right hidden sm:block">
+        <Text size="base" weight="semibold" className="leading-tight">{name}</Text>
+        <Text size="xs" color="muted" className="capitalize">{role}</Text>
       </div>
+      <Avatar name={name} src={avatarUrl} size="md" />
     </div>
   );
 };

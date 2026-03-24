@@ -1,20 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Icon } from '../atoms/Icon';
-import { Text } from '../atoms/Text';
+import { Link, useLocation } from 'react-router-dom';
 
-const NavItem = ({ iconName, label, to, active = false }) => {
-  // CAMBIOS: Menos padding, textos y iconos más pequeños.
-  const baseClasses = "flex items-center gap-3 py-2 px-3 rounded-md cursor-pointer transition-colors text-sm";
-  const activeClasses = "bg-primary-light text-primary-dark";
-  const inactiveClasses = "hover:bg-gray-100 text-gray-600";
+const NavItem = ({ icon: Icon, label, to }) => {
+  const location = useLocation();
+  const isActive = location.pathname.startsWith(to);
 
   return (
-    <Link to={to} className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}>
-      <Icon name={iconName} size={18} className={active ? 'text-primary-dark' : 'text-gray-500'} />
-      <Text weight={active ? 'semibold' : 'medium'}>
-        {label}
-      </Text>
+    <Link
+      to={to}
+      className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group
+        ${
+          isActive
+            ? 'bg-primary text-white shadow-md shadow-primary/25'
+            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
+        }`}
+    >
+      <Icon
+        className={`w-[18px] h-[18px] transition-colors ${
+          isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'
+        }`}
+        strokeWidth={isActive ? 2.2 : 1.8}
+      />
+      <span>{label}</span>
     </Link>
   );
 };

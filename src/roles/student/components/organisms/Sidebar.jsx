@@ -1,21 +1,18 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { LayoutDashboard, BrainCircuit, Users, UserCircle, LogOut, X } from 'lucide-react';
 import { Logo } from '../atoms/Logo';
 import { NavItem } from '../molecules/NavItem';
 import { useAuth } from '../../../../hooks/useAuth';
-import { LogOut } from 'lucide-react';
 
-// === AQUÍ ESTÁ EL CAMBIO CLAVE ===
-// Las rutas ahora son ABSOLUTAS y coinciden 1 a 1 con StudentRoutes.jsx
 const navLinks = [
-  { iconName: 'dashboard', label: 'Dashboard', to: '/student/dashboard' },
-  { iconName: 'ia', label: 'IA general', to: '/student/ia' },
-  { iconName: 'people', label: 'Personas', to: '/student/people' },
-  { iconName: 'profile', label: 'Perfil', to: '/student/profile' },
+  { icon: LayoutDashboard, label: 'Dashboard', to: '/student/dashboard' },
+  { icon: BrainCircuit, label: 'IA general', to: '/student/ia' },
+  { icon: Users, label: 'Personas', to: '/student/people' },
+  { icon: UserCircle, label: 'Perfil', to: '/student/profile' },
 ];
 
-const Sidebar = () => {
-  const location = useLocation();
+const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -24,40 +21,61 @@ const Sidebar = () => {
     navigate('/', { replace: true });
   };
 
-  const pathname = location.pathname;
+  const handleNavClick = () => {
+    if (onClose) onClose();
+  };
 
   return (
-    <aside className="w-60 bg-surface p-6 flex flex-col gap-8 border-r border-gray-200/80 h-screen fixed">
-      <Logo />
-      <nav className="flex flex-col gap-2">
-        {navLinks.map((link) => {
-          // Para Dashboard consideramos también rutas de cursos como parte de dashboard
-          const isDashboard = link.to === '/student/dashboard' && (pathname.startsWith('/student/dashboard') || pathname.startsWith('/student/course'));
-          const active = isDashboard ? true : pathname.startsWith(link.to);
+    <>
+      {/* Overlay móvil */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
 
-          return (
+      <aside
+        className={`w-[250px] bg-white h-screen fixed left-0 top-0 z-50 flex flex-col border-r border-gray-100
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0`}
+      >
+        {/* Logo + Botón cerrar en móvil */}
+        <div className="px-6 pt-7 pb-6 flex items-center justify-between">
+          <Logo />
+          <button
+            onClick={onClose}
+            className="lg:hidden p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navegación */}
+        <nav className="flex-1 px-4 flex flex-col gap-1" onClick={handleNavClick}>
+          {navLinks.map((link) => (
             <NavItem
-              key={link.label}
-              iconName={link.iconName}
+              key={link.to}
+              icon={link.icon}
               label={link.label}
               to={link.to}
-              active={active}
             />
-          );
-        })}
-      </nav>
+          ))}
+        </nav>
 
-      {/* Spacer + Logout */}
-      <div className="mt-auto">
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
-        >
-          <LogOut className="w-5 h-5" />
-          Cerrar sesión
-        </button>
-      </div>
-    </aside>
+        {/* Cerrar Sesión */}
+        <div className="px-4 pb-6">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
+          >
+            <LogOut className="w-[18px] h-[18px]" />
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
+      </aside>
+    </>
   );
 };
 

@@ -24,7 +24,7 @@ const CourseGrid = () => {
   }, [courses, searchTerm]);
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
+    <div>
       {/* Encabezado con búsqueda */}
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -43,7 +43,7 @@ const CourseGrid = () => {
 
       {/* Estado de carga */}
       {isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
             <CourseCardSkeleton key={i} />
           ))}
@@ -72,7 +72,7 @@ const CourseGrid = () => {
 
       {/* Grid de cursos */}
       {!isLoading && !isError && filteredCourses.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <CourseCard
               key={course.id}

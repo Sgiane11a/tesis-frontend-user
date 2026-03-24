@@ -1,28 +1,28 @@
 import React from 'react';
 
-const Avatar = ({ name, src, size = '10', className = '' }) => {
-  const initials = name
-    ? name
-        .split(' ')
-        .map(n => n[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase()
-    : '';
+const sizeMap = {
+  sm: 'w-8 h-8 text-xs',
+  md: 'w-10 h-10 text-sm',
+  lg: 'w-12 h-12 text-base',
+  xl: 'w-16 h-16 text-lg',
+};
 
-  const sizes = {
-    '8': 'w-8 h-8 text-sm',
-    '10': 'w-10 h-10 text-base',
-    '12': 'w-12 h-12 text-lg',
-    '16': 'w-16 h-16 text-xl',
-  };
+const Avatar = ({ name = '', src, size = 'md', className = '' }) => {
+  const initials = name
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
   return (
-    <div className={`rounded-full bg-blue-100 text-blue-700 overflow-hidden flex items-center justify-center shrink-0 ${sizes[size]} ${className}`}>
+    <div
+      className={`rounded-full bg-gradient-to-br from-primary-light to-indigo-200 text-primary-dark overflow-hidden flex items-center justify-center shrink-0 font-semibold ${sizeMap[size] || sizeMap.md} ${className}`}
+    >
       {src ? (
-        <img src={src} alt={name || 'Avatar'} className="w-full h-full object-cover" />
+        <img src={src} alt={name} className="w-full h-full object-cover" />
       ) : (
-        <span className="font-semibold">{initials || (name ? name.charAt(0).toUpperCase() : '')}</span>
+        <span>{initials || '?'}</span>
       )}
     </div>
   );
