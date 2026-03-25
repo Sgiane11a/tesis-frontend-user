@@ -81,6 +81,10 @@ const CourseGrid = () => {
               description={course.description}
               progress={course.progress ?? 0}
               imageUrl={course.imageUrl}
+              grado={course.grado}
+              seccion={course.seccion}
+              studentCount={course.studentCount ?? 0}
+              averageScore={course.averageScore ?? 0}
             />
           ))}
         </div>

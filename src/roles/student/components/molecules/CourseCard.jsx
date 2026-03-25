@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, Users, BarChart3, ArrowRight, GraduationCap } from 'lucide-react';
 import { Card } from '../atoms/Card';
 import { Text } from '../atoms/Text';
@@ -20,18 +20,13 @@ const gradoLabels = {
 
 const CourseCard = ({ id, title, description, progress = 0, imageUrl, grado, seccion, studentCount = 0, averageScore = 0 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleEnter = () => {
-    const inStudent = location.pathname.startsWith('/student');
-    const target = inStudent ? `course/${id}` : `/student/course/${id}`;
-    navigate(target);
+    navigate(`/student/dashboard/course/${id}`);
   };
 
   const handleChat = () => {
-    const inStudent = location.pathname.startsWith('/student');
-    const target = inStudent ? `course/${id}/chat` : `/student/course/${id}/chat`;
-    navigate(target);
+    navigate(`/student/dashboard/course/${id}/chatia`);
   };
 
   const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
