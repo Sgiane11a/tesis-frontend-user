@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useStudentCourses } from '../../../../hooks/useCourses';
+import { useTeacherCourses } from '../../../hooks/useCourses';
+import { useAuth } from '../../../hooks/useAuth';
 
 const COURSE_BANNER =
   'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1400&q=80';
@@ -12,10 +13,11 @@ const defaultObjectives = [
   'Elaborar e interpretar trabajos que promuevan la valoracion del patrimonio cultural peruano.',
 ];
 
-const CourseOverviewPage = () => {
+const TeacherCourseOverviewPage = () => {
   const navigate = useNavigate();
   const { courseId } = useParams();
-  const { data: courses = [] } = useStudentCourses();
+  const { data: courses = [] } = useTeacherCourses();
+  const { user } = useAuth();
 
   const course = useMemo(
     () => courses.find((item) => String(item.id) === String(courseId)),
@@ -26,6 +28,7 @@ const CourseOverviewPage = () => {
   const description =
     course?.description ||
     'Bienvenido al curso. En esta seccion podras revisar modulos, retos, chat con IA e informacion general del curso.';
+  const objectives = course?.objectives || defaultObjectives;
 
   return (
     <div className="space-y-6">
@@ -44,34 +47,44 @@ const CourseOverviewPage = () => {
         <h2 className="text-2xl font-semibold text-gray-700 mb-3">Bienvenido al Curso</h2>
         <p className="text-sm md:text-base leading-relaxed mb-4">{description}</p>
         <ul className="list-disc pl-5 space-y-2 text-sm md:text-base">
-          {defaultObjectives.map((objective) => (
+          {objectives.map((objective) => (
             <li key={objective}>{objective}</li>
           ))}
         </ul>
+        {user?.rol === 'profesor' && (
+          <div className="flex justify-end mt-4">
+            <button
+              className="px-4 py-2 bg-sky-600 text-white rounded shadow hover:bg-sky-700 font-semibold"
+              onClick={() => {/* abrir modal de edición */}}
+            >
+              Editar
+            </button>
+          </div>
+        )}
       </section>
 
       <div className="bg-white rounded-t-md border-b border-sky-100">
         <nav className="flex items-center gap-4 md:gap-6 px-4 md:px-6 overflow-x-auto" aria-label="Navegacion del curso">
           <button
-            onClick={() => navigate('modulos')}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-sky-700 border-b-4 border-sky-300 whitespace-nowrap"
           >
             Modulos
           </button>
           <button
-            onClick={() => navigate('retos')}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/retos`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             Retos
           </button>
           <button
-            onClick={() => navigate('chatia')}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/chatia`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             ChatIA
           </button>
           <button
-            onClick={() => navigate('info')}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/informacion`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             Informacion
@@ -82,4 +95,4 @@ const CourseOverviewPage = () => {
   );
 };
 
-export default CourseOverviewPage;
+export default TeacherCourseOverviewPage;

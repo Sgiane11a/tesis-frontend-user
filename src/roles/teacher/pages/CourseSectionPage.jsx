@@ -33,7 +33,7 @@ const CourseSectionPage = ({ section }) => {
   const description = descriptionMap[section] || '';
 
   return (
-    <div className="max-w-[1200px] mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Navegación por tabs */}
       <CourseTabNav courseId={courseId} activeTab={section} />
 

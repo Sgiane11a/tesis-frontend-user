@@ -3,7 +3,7 @@ import CourseModules from '../../components/organisms/curso/CourseModules';
 
 const ModulesPage = () => {
   return (
-    <div className="p-6">
+    <div>
       <CourseModules />
     </div>
   );

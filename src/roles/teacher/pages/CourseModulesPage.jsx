@@ -1,15 +1,12 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useTeacherCourses } from '../../../hooks/useCourses';
-import { CourseModulesView } from '../components/organisms/CourseModulesView';
+import CourseModules from '../../student/components/organisms/curso/CourseModules';
 
 const CourseModulesPage = () => {
-  const { courseId } = useParams();
-  const { data: courses = [] } = useTeacherCourses();
-
-  const course = courses.find((c) => String(c.id) === String(courseId)) || null;
-
-  return <CourseModulesView course={course} courseId={courseId} />;
+	return (
+		<div className="p-6">
+			<CourseModules />
+		</div>
+	);
 };
 
 export default CourseModulesPage;

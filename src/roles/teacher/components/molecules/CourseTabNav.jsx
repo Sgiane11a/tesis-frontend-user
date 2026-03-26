@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Users, BrainCircuit, Info } from 'lucide-react';
+import { BookOpen, Users, BrainCircuit, Info } from 'lucide-react';
 
 const tabItems = [
   { key: 'modulos', label: 'Módulos', icon: BookOpen },
@@ -13,37 +13,26 @@ const CourseTabNav = ({ courseId, activeTab }) => {
   const navigate = useNavigate();
   const basePath = `/teacher/dashboard/course/${courseId}`;
 
-  const handleBack = () => {
-    navigate(basePath);
-  };
-
   return (
-    <div className="flex items-center gap-1 border-b border-gray-100 pb-3 mb-6 overflow-x-auto">
-      {/* Botón volver */}
-      <button
-        onClick={handleBack}
-        className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors shrink-0 mr-2"
-      >
-        <ArrowLeft className="w-5 h-5" />
-      </button>
-
-      {/* Tabs */}
-      {tabItems.map((tab) => {
-        const isActive = activeTab === tab.key;
-        return (
-          <button
-            key={tab.key}
-            onClick={() => navigate(`${basePath}/${tab.key}`)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap
-              ${isActive
-                ? 'text-primary bg-primary-light/50'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+    <div className="bg-white rounded-t-md border-b border-sky-100 mb-6">
+      <nav className="flex items-center gap-4 md:gap-6 px-4 md:px-6 overflow-x-auto" aria-label="Navegacion del curso">
+        {tabItems.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <button
+              key={tab.key}
+              onClick={() => navigate(`${basePath}/${tab.key}`)}
+              className={`py-3 px-2 text-sm font-semibold rounded-t-md whitespace-nowrap ${
+                isActive
+                  ? 'text-sky-700 border-b-4 border-sky-300'
+                  : 'text-gray-600 hover:text-sky-600'
               }`}
-          >
-            {tab.label}
-          </button>
-        );
-      })}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </nav>
     </div>
   );
 };

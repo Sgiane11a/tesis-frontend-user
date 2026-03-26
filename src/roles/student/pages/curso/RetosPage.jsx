@@ -3,7 +3,7 @@ import CourseRetos from '../../components/organisms/curso/CourseRetos';
 
 const RetosPage = () => {
   return (
-    <div className="p-6">
+    <div>
       <CourseRetos />
     </div>
   );

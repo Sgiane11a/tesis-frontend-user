@@ -5,6 +5,7 @@ import { Text, Button, TabButton, Skeleton } from '../atoms';
 import { CourseBanner } from '../molecules/CourseBanner';
 import { CourseInfoPanel } from '../molecules/CourseInfoPanel';
 import { CourseDescription } from '../molecules/CourseDescription';
+import { useAuth } from '../../../../hooks/useAuth';
 
 const tabs = [
   { key: 'modulos', label: 'Módulos', icon: BookOpen },
@@ -13,8 +14,9 @@ const tabs = [
   { key: 'informacion', label: 'Información', icon: Info },
 ];
 
-const CourseDetailView = ({ course, isLoading }) => {
+const CourseDetailView = ({ course, isLoading, isEditable }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   if (isLoading) {
     return <CourseDetailSkeleton />;
@@ -36,34 +38,20 @@ const CourseDetailView = ({ course, isLoading }) => {
     );
   }
 
+  // Unificar diseño: título centrado, imagen grande, info panel, descripción, tabs
   return (
-    <div className="max-w-[1200px] mx-auto space-y-6">
-      {/* Encabezado: botón volver + título + botón editar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3 min-w-0">
-          <button
-            onClick={() => navigate('/teacher/dashboard')}
-            className="p-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors shrink-0"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <Text as="h1" size="2xl" weight="extrabold" className="tracking-tight truncate">
-            {course.title}
-          </Text>
-        </div>
-        <Button variant="primary" className="shrink-0 self-start sm:self-center">
-          <Pencil className="w-4 h-4" />
-          Editar
-        </Button>
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Título centrado */}
+      <h1 className="text-3xl font-bold text-gray-700 text-center">{course.title}</h1>
+
+      {/* Imagen/banner */}
+      <div className="rounded-xl overflow-hidden border border-sky-100 bg-white shadow-sm">
+        <CourseBanner imageUrl={course.imageUrl} title={course.title} />
       </div>
 
-      {/* Contenido principal: imagen + panel de info */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">
-        {/* Imagen del curso */}
-        <CourseBanner imageUrl={course.imageUrl} title={course.title} />
-
-        {/* Panel de información */}
-        <div className="lg:self-stretch">
+      {/* Panel de información general */}
+      <div className="flex justify-center">
+        <div className="w-full max-w-xs">
           <CourseInfoPanel
             studentCount={course.studentCount || 0}
             averageScore={course.averageScore || 0}
@@ -72,21 +60,45 @@ const CourseDetailView = ({ course, isLoading }) => {
         </div>
       </div>
 
-      {/* Descripción del curso */}
+      {/* Descripción y objetivos */}
       <CourseDescription title={course.title} description={course.description} />
 
-      {/* Tabs de navegación → navegan a sub-rutas */}
-      <div className="flex flex-wrap gap-3">
-        {tabs.map((tab) => (
-          <TabButton
-            key={tab.key}
-            active={false}
-            onClick={() => navigate(`/teacher/dashboard/course/${course.id}/${tab.key}`)}
-            icon={tab.icon}
-          >
-            {tab.label}
-          </TabButton>
-        ))}
+      {/* Botón Editar solo para profesores */}
+      {user?.rol === 'profesor' && (
+        <div className="flex justify-center">
+          <Button variant="primary" className="mt-2">
+            <Pencil className="w-4 h-4" />
+            Editar
+          </Button>
+        </div>
+      )}
+
+      {/* Tabs de navegación */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <button
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos`)}
+          className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
+        >
+          Módulos
+        </button>
+        <button
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/estudiantes`)}
+          className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
+        >
+          Estudiantes
+        </button>
+        <button
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/chatia`)}
+          className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
+        >
+          ChatIA
+        </button>
+        <button
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/informacion`)}
+          className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
+        >
+          Información
+        </button>
       </div>
     </div>
   );

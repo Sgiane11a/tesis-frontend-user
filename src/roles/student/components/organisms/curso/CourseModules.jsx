@@ -6,12 +6,12 @@ const CourseModules = () => {
   const [open, setOpen] = useState(null);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {sampleModules.map(m => (
         <div key={m.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <button onClick={() => setOpen(open === m.id ? null : m.id)} className="w-full flex items-center justify-between p-4 hover:bg-gray-50">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-sky-100" />
+          <button onClick={() => setOpen(open === m.id ? null : m.id)} className="w-full flex items-center justify-between py-4 pr-4 pl-2 md:pl-3 hover:bg-gray-50">
+            <div className="flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-sky-100" />
               <div className="text-sm font-semibold text-gray-800">{m.title}</div>
             </div>
             <div className="text-sky-500"><Icon name={open === m.id ? 'chevrons-up' : 'chevrons-down'} /></div>

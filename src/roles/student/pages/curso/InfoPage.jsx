@@ -3,7 +3,7 @@ import CourseInfo from '../../components/organisms/curso/CourseInfo';
 
 const InfoPage = () => {
   return (
-    <div className="p-6">
+    <div>
       <CourseInfo />
     </div>
   );

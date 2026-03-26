@@ -3,7 +3,7 @@ import CourseChat from '../../components/organisms/curso/CourseChat';
 
 const ChatIAPage = () => {
   return (
-    <div className="p-6">
+    <div>
       <CourseChat />
     </div>
   );

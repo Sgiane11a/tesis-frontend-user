@@ -47,7 +47,7 @@ const CourseModulesView = ({ course, courseId }) => {
   const modules = mockModules;
 
   return (
-    <div className="max-w-[1200px] mx-auto">
+    <div className="max-w-7xl mx-auto">
       {/* Navegación por tabs */}
       <CourseTabNav courseId={courseId} activeTab="modulos" />
 
