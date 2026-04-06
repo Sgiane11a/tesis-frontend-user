@@ -14,37 +14,37 @@ export const navLinks = [
 ];
 
 export const sampleModules = [
-    { id: 's1', title: 'Semana 01 - Rebelión de José Gabriel Condorcanqui', items: [
-        { id: 'd1', title: 'Documento de la Rebelión', type: 'pdf' },
-        { id: 'd2', title: 'Presentación - Introducción', type: 'ppt' },
-        { id: 'd3', title: 'Guía de lectura (apuntes del profesor)', type: 'word' },
-        { id: 'd4', title: 'Video: Contexto histórico (12:34)', type: 'video' },
+    { id: 's1', title: 'Módulo 1 - Cuentos y relatos', items: [
+        { id: 'd1', title: 'Documento de Cuentos clásicos', type: 'pdf' },
+        { id: 'd2', title: 'Presentación: Introducción a los cuentos', type: 'ppt' },
+        { id: 'd3', title: 'Guía de lectura', type: 'word' },
+        { id: 'd4', title: 'Video: Cuentos populares', type: 'video' },
     ] },
 
-    { id: 's2', title: 'Semana 02 - Corriente Libertadora del Sur', items: [
-        { id: 'd5', title: 'Lectura: Análisis de fuentes primarias', type: 'pdf' },
-        { id: 'd6', title: 'Actividad práctica: Mapa interactivo', type: 'link' },
-        { id: 'd7', title: 'Video: Testimonio de la época', type: 'video' },
+    { id: 's2', title: 'Módulo 2 - Comprensión lectora', items: [
+        { id: 'd5', title: 'Lectura: Textos narrativos', type: 'pdf' },
+        { id: 'd6', title: 'Actividad práctica: Interpretación', type: 'link' },
+        { id: 'd7', title: 'Video: Estrategias de lectura', type: 'video' },
     ] },
 
-    { id: 's3', title: 'Semana 03 - Independencia y procesos regionales', items: [
-        { id: 'd8', title: 'Presentación: Líderes regionales', type: 'ppt' },
-        { id: 'd9', title: 'Documento: Tratados y acuerdos (resumen)', type: 'pdf' },
-        { id: 'd10', title: 'Ejercicio: Preguntas tipo test', type: 'quiz' },
+    { id: 's3', title: 'Módulo 3 - Gramática y estilo', items: [
+        { id: 'd8', title: 'Presentación: Clases de palabra', type: 'ppt' },
+        { id: 'd9', title: 'Documento: Oraciones compuestas', type: 'pdf' },
+        { id: 'd10', title: 'Ejercicio: Reescritura de textos', type: 'quiz' },
     ] },
 
-    { id: 's4', title: 'Semana 04 - Reformas sociales y económicas', items: [
-        { id: 'd11', title: 'Artículo académico: Reforma agraria', type: 'pdf' },
-        { id: 'd12', title: 'Tarea: Ensayo corto (subir ZIP)', type: 'zip' },
+    { id: 's4', title: 'Módulo 4 - Producción de texto', items: [
+        { id: 'd11', title: 'Artículo: Escritura creativa', type: 'pdf' },
+        { id: 'd12', title: 'Tarea: Redacción de cuento', type: 'zip' },
     ] },
 
-    { id: 's5', title: 'Semana 05 - Guerra y consecuencias', items: [
-        { id: 'd13', title: 'Documental corto (17:20)', type: 'video' },
-        { id: 'd14', title: 'Infografía: Línea de tiempo', type: 'image' },
+    { id: 's5', title: 'Módulo 5 - Literatura clásica', items: [
+        { id: 'd13', title: 'Documental corto: Autores clásicos', type: 'video' },
+        { id: 'd14', title: 'Infografía: Movimientos literarios', type: 'image' },
         { id: 'd15', title: 'Lectura complementaria', type: 'pdf' },
     ] },
 
-    { id: 's6', title: 'Semana 06 - Evaluación final', items: [
+    { id: 's6', title: 'Módulo 6 - Evaluación y repaso', items: [
         { id: 'd16', title: 'Examen final (formato online)', type: 'quiz' },
         { id: 'd17', title: 'Rubrica de evaluación', type: 'pdf' },
     ] },

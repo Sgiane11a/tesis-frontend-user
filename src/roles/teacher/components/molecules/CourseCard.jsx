@@ -15,7 +15,7 @@ const CourseCard = ({ id, title, description, imageUrl, grado, seccion, studentC
   const navigate = useNavigate();
 
   const handleEnter = () => {
-    navigate(`/teacher/dashboard/course/${id}`);
+    navigate(`/teacher/dashboard/course/${id}/modulos`);
   };
 
   const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
