@@ -11,11 +11,11 @@ const gradoLabels = {
   5: '5to Año',
 };
 
-const CourseCard = ({ id, title, description, imageUrl, grado, seccion, studentCount = 0, averageScore = 0, progress = 0 }) => {
+const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, studentCount = 0, averageScore = 0, progress = 0 }) => {
   const navigate = useNavigate();
 
   const handleEnter = () => {
-    navigate(`/teacher/dashboard/course/${id}/modulos`);
+    navigate(`/teacher/dashboard/course/${id}${idAula ? `?aula=${idAula}` : ''}`);
   };
 
   const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;

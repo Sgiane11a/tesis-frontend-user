@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTeacherCourses } from '../../../hooks/useCourses';
 import { useAuth } from '../../../hooks/useAuth';
 
@@ -16,12 +16,14 @@ const defaultObjectives = [
 const TeacherCourseOverviewPage = () => {
   const navigate = useNavigate();
   const { courseId } = useParams();
+  const [searchParams] = useSearchParams();
   const { data: courses = [] } = useTeacherCourses();
   const { user } = useAuth();
+  const aulaFromQuery = searchParams.get('aula');
 
   const course = useMemo(
-    () => courses.find((item) => String(item.id) === String(courseId)),
-    [courses, courseId]
+    () => courses.find((item) => String(item.id) === String(courseId) && (!aulaFromQuery || String(item.idAula) === String(aulaFromQuery))),
+    [courses, courseId, aulaFromQuery]
   );
 
   const title = course?.title || 'Historia del Peru - Primer Ano';
@@ -66,25 +68,25 @@ const TeacherCourseOverviewPage = () => {
       <div className="bg-white rounded-t-md border-b border-sky-100">
         <nav className="flex items-center gap-4 md:gap-6 px-4 md:px-6 overflow-x-auto" aria-label="Navegacion del curso">
           <button
-            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos`)}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos${aulaFromQuery ? `?aula=${aulaFromQuery}` : ''}`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-sky-700 border-b-4 border-sky-300 whitespace-nowrap"
           >
             Modulos
           </button>
           <button
-            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/retos`)}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/retos${aulaFromQuery ? `?aula=${aulaFromQuery}` : ''}`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             Retos
           </button>
           <button
-            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/chatia`)}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/chatia${aulaFromQuery ? `?aula=${aulaFromQuery}` : ''}`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             ChatIA
           </button>
           <button
-            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/informacion`)}
+            onClick={() => navigate(`/teacher/dashboard/course/${courseId}/modulos/informacion${aulaFromQuery ? `?aula=${aulaFromQuery}` : ''}`)}
             className="py-3 px-2 text-sm font-semibold rounded-t-md text-gray-600 hover:text-sky-600 whitespace-nowrap"
           >
             Informacion

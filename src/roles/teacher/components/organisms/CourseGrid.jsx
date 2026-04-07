@@ -75,6 +75,7 @@ const CourseGrid = () => {
             <CourseCard
               key={`${course.id}-${course.idAula}`}
               id={course.id}
+              idAula={course.idAula}
               title={course.title}
               description={course.description}
               imageUrl={course.imageUrl}
