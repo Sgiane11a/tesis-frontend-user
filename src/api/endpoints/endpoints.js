@@ -5,6 +5,7 @@ export const endpoints = {
     perfil: '/usuarios/perfil',
     byId: (id) => `/usuarios/${id}`,
     cursosDeAlumno: (id) => `/usuarios/${id}/cursos`,
+    notificacionesAlumno: (id, limit = 20) => `/usuarios/${id}/notificaciones?limit=${limit}`,
   },
   courses: {
     list: '/cursos',
