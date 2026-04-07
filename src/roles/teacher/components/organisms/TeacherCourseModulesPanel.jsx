@@ -156,6 +156,7 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
   })
   const [moduleForm, setModuleForm] = useState({
     open: false,
+    id_bimestre: Number(bimestre) || 1,
     titulo: '',
     descripcion: '',
     visible: false,
@@ -212,16 +213,31 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
   }
 
   const loadModules = useCallback(async () => {
-    if (!courseId || !aulaId || !bimestre) return
+    if (!courseId || !aulaId) return
     setLoading(true)
     setError('')
     try {
-      const data = await TeacherModulesService.getByBimesterAndCourse({
-        idBimestre: bimestre,
-        idCurso: courseId,
-        idAula: aulaId,
-      })
-      setModules(Array.isArray(data) ? data : [])
+      if (bimestre) {
+        const data = await TeacherModulesService.getByBimesterAndCourse({
+          idBimestre: bimestre,
+          idCurso: courseId,
+          idAula: aulaId,
+        })
+        setModules(Array.isArray(data) ? data : [])
+      } else {
+        const resultados = await Promise.all(
+          [1, 2, 3, 4].map((b) =>
+            TeacherModulesService.getByBimesterAndCourse({
+              idBimestre: b,
+              idCurso: courseId,
+              idAula: aulaId,
+            })
+          )
+        )
+        const combinados = resultados.flat().filter(Boolean)
+        const unicos = Array.from(new Map(combinados.map((m) => [m.id_modulo, m])).values())
+        setModules(unicos)
+      }
     } catch (err) {
       setError(err?.message || 'No se pudieron cargar los módulos')
     } finally {
@@ -254,7 +270,7 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
   }, [])
 
   const sortedModules = useMemo(() => {
-    return [...modules].sort((a, b) => (a.orden || 0) - (b.orden || 0))
+    return [...modules].sort((a, b) => (a.id_modulo || 0) - (b.id_modulo || 0))
   }, [modules])
 
   const submitEditResource = async (e) => {
@@ -301,6 +317,7 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
   const openCreateModuleQuestionnaire = () => {
     setModuleForm({
       open: true,
+      id_bimestre: Number(bimestre) || 1,
       titulo: '',
       descripcion: '',
       visible: false,
@@ -311,8 +328,13 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
   const submitCreateModule = async (e) => {
     e.preventDefault()
     const title = moduleForm.titulo?.trim()
+    const bimestreSeleccionado = Number(moduleForm.id_bimestre)
     if (!title) {
       showFeedback('error', 'Ingresa el título del módulo.')
+      return
+    }
+    if (!bimestreSeleccionado || bimestreSeleccionado < 1 || bimestreSeleccionado > 4) {
+      showFeedback('error', 'Selecciona un bimestre válido (I a IV).')
       return
     }
 
@@ -320,7 +342,7 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
 
     try {
       await TeacherModulesService.createModule({
-        id_bimestre: bimestre,
+        id_bimestre: bimestreSeleccionado,
         id_curso: Number(courseId),
         id_aula: Number(aulaId),
         titulo: title,
@@ -329,6 +351,7 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
       })
       setModuleForm({
         open: false,
+        id_bimestre: Number(bimestre) || 1,
         titulo: '',
         descripcion: '',
         visible: false,
@@ -730,12 +753,12 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
         <ModalShell
           title="Cuestionario: Crear módulo"
           subtitle="Define el nombre, la descripción y si el módulo quedará visible para tus estudiantes."
-          onClose={() => setModuleForm({ open: false, titulo: '', descripcion: '', visible: false, saving: false })}
+          onClose={() => setModuleForm({ open: false, id_bimestre: Number(bimestre) || 1, titulo: '', descripcion: '', visible: false, saving: false })}
           footer={(
             <div className="flex items-center justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setModuleForm({ open: false, titulo: '', descripcion: '', visible: false, saving: false })}
+                onClick={() => setModuleForm({ open: false, id_bimestre: Number(bimestre) || 1, titulo: '', descripcion: '', visible: false, saving: false })}
                 className="px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100"
               >
                 Cancelar
@@ -752,6 +775,19 @@ const TeacherCourseModulesPanel = ({ courseId, aulaId, bimestre }) => {
           )}
         >
           <form id="create-module-form" onSubmit={submitCreateModule} className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Bimestre</label>
+              <select
+                value={moduleForm.id_bimestre}
+                onChange={(e) => setModuleForm((prev) => ({ ...prev, id_bimestre: Number(e.target.value) }))}
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-100 focus:border-sky-300"
+              >
+                <option value={1}>Bimestre I</option>
+                <option value={2}>Bimestre II</option>
+                <option value={3}>Bimestre III</option>
+                <option value={4}>Bimestre IV</option>
+              </select>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Título del módulo</label>
               <input

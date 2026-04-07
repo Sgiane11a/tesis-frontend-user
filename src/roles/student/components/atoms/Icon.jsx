@@ -90,6 +90,8 @@ const iconMap = {
   ppt: BookOpen,
   word: Book,
   video: MonitorPlay,
+  youtube: MonitorPlay,
+  link: Book,
 };
 
 const Icon = ({ name, size = 20, className }) => {

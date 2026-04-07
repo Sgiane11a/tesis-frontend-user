@@ -7,7 +7,7 @@ import { useStudentCourses } from '../../../hooks/useCourses';
 const CoursePage = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const [bimestre, setBimestre] = useState('Bimestre - I');
+  const [bimestre, setBimestre] = useState('Todos');
   const { data: courses = [] } = useStudentCourses();
 
   const isOverview = !!useMatch('/student/dashboard/course/:courseId');
@@ -41,7 +41,7 @@ const CoursePage = () => {
 
       {isOverview ? (
         <div className="bg-white border border-sky-100 rounded-xl p-4 md:p-6">
-          <Outlet />
+          <Outlet context={{ courseId, aulaId: course?.idAula ?? null, bimestre }} />
         </div>
       ) : (
         <>
@@ -102,7 +102,7 @@ const CoursePage = () => {
 
           <div className="bg-gradient-to-b from-white to-gray-50 p-6 rounded-b-md shadow-sm">
             <h1 className="text-lg md:text-xl font-semibold text-gray-700 mb-5">{courseTitle}</h1>
-            <Outlet />
+            <Outlet context={{ courseId, aulaId: course?.idAula ?? null, bimestre }} />
           </div>
         </>
       )}

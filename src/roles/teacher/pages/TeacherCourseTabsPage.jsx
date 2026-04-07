@@ -24,7 +24,7 @@ const TeacherCourseTabsPage = () => {
   const { tab, courseId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [bimestre, setBimestre] = useState('Bimestre - I');
+  const [bimestre, setBimestre] = useState('Todos');
   const { data: courses = [] } = useTeacherCourses();
   const aulaFromQuery = searchParams.get('aula');
 
@@ -48,6 +48,7 @@ const TeacherCourseTabsPage = () => {
   };
 
   const bimestreToNumber = (label) => {
+    if (String(label).toLowerCase().includes('todos')) return null;
     if (label.includes('II') && !label.includes('III')) return 2;
     if (label.includes('III')) return 3;
     if (label.includes('IV')) return 4;
