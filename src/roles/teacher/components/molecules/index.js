@@ -14,3 +14,4 @@ export { CourseTabNav } from './CourseTabNav';
 export { ModuleAccordion } from './ModuleAccordion';
 export { MaterialItem } from './MaterialItem';
 export { BimesterSelector } from './BimesterSelector';
+export { StudentListModal } from './StudentListModal';

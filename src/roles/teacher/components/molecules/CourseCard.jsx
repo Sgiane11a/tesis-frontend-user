@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Users, BarChart3, ArrowRight, GraduationCap } from 'lucide-react';
 import { Card, Text, ProgressBar, Badge } from '../atoms';
+import { StudentListModal } from './StudentListModal';
 
 const gradoLabels = {
   1: '1er Año',
@@ -13,9 +14,15 @@ const gradoLabels = {
 
 const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, studentCount = 0, averageScore = 0, progress = 0 }) => {
   const navigate = useNavigate();
+  const [showStudentsModal, setShowStudentsModal] = useState(false);
 
   const handleEnter = () => {
     navigate(`/teacher/dashboard/course/${id}${idAula ? `?aula=${idAula}` : ''}`);
+  };
+
+  const handleStudentsClick = (e) => {
+    e.stopPropagation();
+    setShowStudentsModal(true);
   };
 
   const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
@@ -78,10 +85,14 @@ const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, 
 
           {/* Footer */}
           <div className="flex items-center justify-between pt-2 mt-auto border-t border-gray-50">
-            <div className="flex items-center gap-1.5">
+            <button 
+              onClick={handleStudentsClick}
+              className="flex items-center gap-1.5 hover:text-primary-dark transition-colors cursor-pointer"
+              title="Ver lista de alumnos"
+            >
               <Users className="w-4 h-4 text-gray-400" />
               <Text size="xs" color="secondary" weight="medium">{studentCount} alumnos</Text>
-            </div>
+            </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -95,6 +106,14 @@ const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, 
           </div>
         </div>
       </Card>
+
+      {/* Modal de lista de alumnos */}
+      <StudentListModal 
+        isOpen={showStudentsModal}
+        onClose={() => setShowStudentsModal(false)}
+        courseTitle={title}
+        studentCount={studentCount}
+      />
     </div>
   );
 };
