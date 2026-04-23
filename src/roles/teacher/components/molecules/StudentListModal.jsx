@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, User, BookOpen, MessageSquare, Brain, Search, Filter } from 'lucide-react';
-import { Text, Button, Avatar, Badge, Input } from '../atoms';
+import { Text, Avatar, Badge } from '../atoms';
 
 // Mock data de estudiantes con rendimiento
 const mockStudents = [
@@ -98,7 +99,7 @@ const MetricCard = ({ icon: Icon, label, value, subValue, color = 'primary' }) =
 const StudentRow = ({ student, onClick, isSelected }) => (
   <div 
     onClick={() => onClick(student)}
-    className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-primary-light/30 transition-colors ${isSelected ? 'bg-primary-light/50' : ''}`}
+    className={`p-4 border-b border-slate-200 cursor-pointer transition-colors ${isSelected ? 'bg-slate-100 border-l-4 border-primary' : 'hover:bg-slate-50'}`}
   >
     <div className="flex items-center gap-3">
       <Avatar name={student.nombre} size="md" />
@@ -116,17 +117,16 @@ const StudentRow = ({ student, onClick, isSelected }) => (
   </div>
 );
 
-const StudentDetail = ({ student, onBack }) => (
+const StudentDetail = ({ student }) => (
   <div className="flex flex-col h-full">
     {/* Header */}
-    <div className="p-4 border-b border-gray-200 flex items-center gap-3 bg-gray-50">
-      <button onClick={onBack} className="p-2 hover:bg-gray-200 rounded-lg transition-colors">
-        <X className="w-5 h-5" />
-      </button>
-      <Avatar name={student.nombre} size="lg" />
-      <div>
-        <Text weight="bold" size="lg">{student.nombre}</Text>
-        <Text size="sm" color="muted">{student.correo}</Text>
+    <div className="p-5 border-b border-gray-200 bg-white shadow-sm">
+      <div className="flex items-center gap-3">
+        <Avatar name={student.nombre} size="lg" />
+        <div>
+          <Text weight="bold" size="lg">{student.nombre}</Text>
+          <Text size="sm" color="muted">{student.correo}</Text>
+        </div>
       </div>
     </div>
 
@@ -336,21 +336,19 @@ const StudentDetail = ({ student, onBack }) => (
 );
 
 const StudentListModal = ({ isOpen, onClose, courseTitle, studentCount = 0 }) => {
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const students = mockStudents;
+  const [selectedStudent, setSelectedStudent] = useState(students[0] || null);
   const [searchTerm, setSearchTerm] = useState('');
 
   if (!isOpen) return null;
-
-  // Usar mock data o datos reales
-  const students = mockStudents;
 
   const filteredStudents = students.filter(student =>
     student.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.correo.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -358,21 +356,21 @@ const StudentListModal = ({ isOpen, onClose, courseTitle, studentCount = 0 }) =>
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-4xl h-[80vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      <div className="relative w-[92vw] min-w-[980px] max-w-[1120px] h-[84vh] bg-white rounded-[28px] shadow-2xl overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-primary to-primary-dark text-white">
-          <div className="flex items-center justify-between">
+        <div className="p-5 border-b border-gray-200 bg-gradient-to-r from-primary to-slate-900 text-white">
+          <div className="flex flex-col gap-3 items-start md:flex-row md:items-center md:justify-between">
             <div>
-              <Text weight="bold" size="xl" className="text-white">
+              <Text weight="bold" size="2xl" className="text-white tracking-tight">
                 Alumnos del Curso
               </Text>
-              <Text size="sm" className="text-white/80">
+              <Text size="sm" className="text-white/75">
                 {courseTitle} • {studentCount} alumnos
               </Text>
             </div>
             <button 
               onClick={onClose}
-              className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
@@ -381,54 +379,56 @@ const StudentListModal = ({ isOpen, onClose, courseTitle, studentCount = 0 }) =>
           {/* Search */}
           <div className="mt-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
                 placeholder="Buscar alumno por nombre o correo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg bg-white/20 text-white placeholder-white/60 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
+                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white text-slate-900 placeholder-slate-400 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white/60"
               />
             </div>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-row overflow-hidden bg-slate-50">
           {/* Lista de estudiantes */}
-          <div className={`w-full ${selectedStudent ? 'hidden md:block md:w-1/3 border-r' : 'w-full'}`}>
-            <div className="h-full overflow-y-auto">
-              {filteredStudents.length === 0 ? (
-                <div className="p-8 text-center">
-                  <User className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <Text color="muted">No se encontraron alumnos</Text>
-                </div>
-              ) : (
-                filteredStudents.map(student => (
-                  <StudentRow
-                    key={student.id}
-                    student={student}
-                    onClick={setSelectedStudent}
-                    isSelected={selectedStudent?.id === student.id}
-                  />
-                ))
-              )}
-            </div>
+          <div className="w-2/5 border-r border-slate-200 overflow-y-auto bg-white">
+            {filteredStudents.length === 0 ? (
+              <div className="p-8 text-center">
+                <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                <Text color="muted">No se encontraron alumnos</Text>
+              </div>
+            ) : (
+              filteredStudents.map(student => (
+                <StudentRow
+                  key={student.id}
+                  student={student}
+                  onClick={setSelectedStudent}
+                  isSelected={selectedStudent?.id === student.id}
+                />
+              ))
+            )}
           </div>
 
           {/* Detalle del estudiante */}
-          {selectedStudent && (
-            <div className="w-full md:w-2/3 md:border-l border-gray-200">
-              <StudentDetail 
-                student={selectedStudent}
-                onBack={() => setSelectedStudent(null)}
-              />
-            </div>
-          )}
+          <div className="w-3/5 overflow-y-auto bg-slate-50 p-5">
+            {selectedStudent ? (
+              <StudentDetail student={selectedStudent} />
+            ) : (
+              <div className="h-full flex flex-col justify-center items-center p-8 text-center">
+                <Text weight="semibold" size="lg" className="mb-2">Selecciona un alumno para ver su rendimiento</Text>
+                <Text size="sm" color="muted">Haz click en cualquier alumno del listado para abrir sus métricas detalladas.</Text>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export { StudentListModal };
