@@ -104,3 +104,28 @@ export const buildStudentRecommendations = (student) => [
   student.progress < 70 ? 'Revisar recursos pendientes del bimestre.' : 'Proponer un reto adicional para consolidar el avance.',
   'Comparar sus proximos resultados con este historial para detectar mejoras.',
 ];
+
+export const buildStudentAiAnalysis = (student) => {
+  const seed = Number(student?.id) || 1;
+  const trend = [42, 58, 73, 91, 68, 55].map((value, index) => {
+    const adjusted = value + ((seed * (index + 3)) % 11) - 5;
+    return Math.max(15, Math.min(98, adjusted));
+  });
+
+  return {
+    trend,
+    comment: student.average >= 14
+      ? 'La estudiante presenta un rendimiento consistente y superior al promedio. Destaca por responder con precision, mantener participacion activa y recuperar rapidamente cuando comete errores. Se recomienda proponer retos de mayor complejidad para sostener su avance.'
+      : student.average >= 11
+        ? 'La estudiante presenta un rendimiento variable. Inicio con resultados aceptables, pero tuvo una caida significativa en uno de los examenes, lo que afecto su promedio general. Sin embargo, su recuperacion en las ultimas evaluaciones demuestra esfuerzo y mejora en su aprendizaje. Se recomienda reforzar los temas donde mostro mayor dificultad y mantener el acompanamiento para consolidar su progreso.'
+        : 'La estudiante requiere acompanamiento cercano. Los resultados muestran dificultades recurrentes para sostener evidencia y completar explicaciones. Se recomienda trabajar con recursos breves, retroalimentacion inmediata y un nuevo intento guiado.',
+    strengths: ['Mejora progresiva en los ultimos intentos', 'Buena participacion en actividades guiadas', 'Mayor precision cuando revisa el material antes del quiz'],
+    risks: ['Baja estabilidad entre evaluaciones', 'Errores en preguntas de inferencia', 'Necesita reforzar explicaciones con evidencia'],
+    actions: ['Asignar una practica corta de 10 minutos', 'Revisar dos preguntas falladas en clase', 'Programar seguimiento despues del siguiente quiz'],
+    insightCards: [
+      { label: 'Riesgo IA', value: student.average < 11 ? 'Alto' : student.average < 14 ? 'Medio' : 'Bajo' },
+      { label: 'Tendencia', value: student.progress >= 70 ? 'En mejora' : 'Irregular' },
+      { label: 'Prioridad', value: student.status === 'attention' ? 'Urgente' : 'Normal' },
+    ],
+  };
+};

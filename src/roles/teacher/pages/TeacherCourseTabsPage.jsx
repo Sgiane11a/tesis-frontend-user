@@ -55,48 +55,52 @@ const TeacherCourseTabsPage = () => {
     return 1;
   };
 
-  return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-4">
-        <button
-          type="button"
-          onClick={handleBack}
-          className="inline-flex items-center gap-1 text-gray-500 hover:text-sky-700 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          <span className="text-sm font-medium">Volver</span>
-        </button>
-        <BimestreSelect
-          value={bimestre}
-          onChange={(e) => setBimestre(e.target.value)}
-          className="text-sm text-gray-500"
-        />
-      </div>
+  const activeTab = tab || 'modulos';
 
-      <div className="bg-white rounded-t-md border-b border-sky-100">
-        <div className="flex items-center justify-between px-4 md:px-6">
-          <nav className="flex items-center gap-4 md:gap-6" aria-label="Navegacion del curso">
-            {tabs.map((t) => (
-              <button
-                key={t.key}
-                className={`py-3 px-2 text-sm font-semibold rounded-t-md whitespace-nowrap ${
-                  (tab || 'modulos') === t.key
-                    ? 'text-sky-700 border-b-4 border-sky-300'
-                    : 'text-gray-600 hover:text-sky-600'
-                }`}
-                onClick={() => handleTabClick(t.key)}
-              >
-                {t.label}
-              </button>
-            ))}
-          </nav>
+  return (
+    <div className="w-full min-w-0">
+      <div className="bg-white rounded-t-xl border-b border-sky-100">
+        <div className="flex items-center justify-between gap-3 px-3 md:px-4 overflow-x-auto">
+          <div className="flex min-w-max items-center gap-2">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-sky-700 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Volver
+            </button>
+            <div className="h-6 w-px bg-gray-200" />
+            <nav className="flex items-center gap-3 md:gap-5" aria-label="Navegacion del curso">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  className={`py-2.5 px-2 text-sm font-semibold rounded-t-md whitespace-nowrap ${
+                    activeTab === t.key
+                      ? 'text-sky-700 border-b-4 border-sky-300'
+                      : 'text-gray-600 hover:text-sky-600'
+                  }`}
+                  onClick={() => handleTabClick(t.key)}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+          {activeTab === 'modulos' && (
+            <BimestreSelect
+              value={bimestre}
+              onChange={(e) => setBimestre(e.target.value)}
+              className="shrink-0 text-sm text-gray-500"
+            />
+          )}
         </div>
       </div>
 
-      <div className="bg-gradient-to-b from-white to-gray-50 p-6 rounded-b-md shadow-sm">
-        <div className="flex items-center justify-between mb-5">
+      <div className={`bg-gradient-to-b from-white to-gray-50 rounded-b-xl shadow-sm min-w-0 ${activeTab === 'chatia' ? 'p-0' : 'p-4 md:p-5'}`}>
+        {activeTab !== 'chatia' && <div className="flex items-center justify-between mb-4">
           <h1 className="text-lg md:text-xl font-semibold text-gray-700">{courseTitle}</h1>
-          {(tab || 'modulos') === 'modulos' && (
+          {activeTab === 'modulos' && (
             <button
               id="create-module-btn"
               onClick={() => document.dispatchEvent(new CustomEvent('teacher:openCreateModule'))}
@@ -106,17 +110,17 @@ const TeacherCourseTabsPage = () => {
               Crear módulo
             </button>
           )}
-        </div>
-        {(tab || 'modulos') === 'modulos' && (
+        </div>}
+        {activeTab === 'modulos' && (
           <TeacherCourseModulesPanel
             courseId={courseId}
             aulaId={aulaFromQuery || course?.idAula}
             bimestre={bimestreToNumber(bimestre)}
           />
         )}
-        {(tab || 'modulos') === 'estudiantes' && <TeacherCourseStudentsPanel course={course} />}
-        {(tab || 'modulos') === 'chatia' && <TeacherCourseChatPanel />}
-        {(tab || 'modulos') === 'informacion' && <TeacherCourseInfoPanel course={course} />}
+        {activeTab === 'estudiantes' && <TeacherCourseStudentsPanel course={course} />}
+        {activeTab === 'chatia' && <TeacherCourseChatPanel course={course} />}
+        {activeTab === 'informacion' && <TeacherCourseInfoPanel course={course} />}
       </div>
     </div>
   );

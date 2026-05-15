@@ -15,7 +15,7 @@ const TeacherMainLayout = ({ children }) => {
 
       {/* Contenido principal - responsive */}
       <main className="lg:ml-[250px] pt-16 transition-[margin] duration-300">
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-3 sm:p-4 lg:p-4">
           {children}
         </div>
       </main>

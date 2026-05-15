@@ -2,18 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { ChevronLeft, X } from 'lucide-react';
 import StudentReportView from './StudentReportView';
 import QuizDetailView from './QuizDetailView';
+import StudentAnalysisDrawer from './StudentAnalysisDrawer';
 
 const StudentReportModal = ({ student, course, onClose }) => {
   const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   useEffect(() => {
     setSelectedQuiz(null);
+    setShowAnalysis(false);
   }, [student?.id]);
 
   if (!student) return null;
 
   const handleClose = () => {
     setSelectedQuiz(null);
+    setShowAnalysis(false);
     onClose();
   };
 
@@ -26,7 +30,7 @@ const StudentReportModal = ({ student, course, onClose }) => {
       className="fixed inset-0 z-50 bg-gray-900/40 px-4 py-6 flex items-center justify-center"
       onMouseDown={handleBackdropClick}
     >
-      <div className="w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-xl bg-white shadow-2xl border border-gray-200">
+      <div className="relative w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-xl bg-white shadow-2xl border border-gray-200">
         <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-5">
           <div className="flex items-start gap-4">
             <button
@@ -58,6 +62,7 @@ const StudentReportModal = ({ student, course, onClose }) => {
             {!selectedQuiz && (
               <button
                 type="button"
+                onClick={() => setShowAnalysis(true)}
                 className="rounded-lg border border-sky-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-sky-50"
               >
                 Ver Analisis
@@ -74,13 +79,28 @@ const StudentReportModal = ({ student, course, onClose }) => {
           </div>
         </div>
 
-        <div className="max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-6">
+        <div className={`max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-6 transition-all ${showAnalysis ? 'pointer-events-none blur-[1px] opacity-40' : ''}`}>
           {selectedQuiz ? (
             <QuizDetailView quiz={selectedQuiz} course={course} />
           ) : (
             <StudentReportView student={student} course={course} onViewQuiz={setSelectedQuiz} />
           )}
         </div>
+
+        {showAnalysis && !selectedQuiz && (
+          <>
+            <button
+              type="button"
+              className="absolute inset-0 z-10 bg-black/10"
+              onClick={() => setShowAnalysis(false)}
+              aria-label="Cerrar analisis IA"
+            />
+            <StudentAnalysisDrawer
+              student={student}
+              onClose={() => setShowAnalysis(false)}
+            />
+          </>
+        )}
       </div>
     </div>
   );
