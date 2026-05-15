@@ -9,6 +9,9 @@ const MainLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const showChatShortcut = location.pathname === '/student/dashboard';
+  const isCourseWorkspace = location.pathname.startsWith('/student/dashboard/course/');
+  const isRetosRoute = /^\/student\/dashboard\/course\/[^/]+\/retos\/?$/.test(location.pathname);
+  const isSidebarPinned = !isRetosRoute;
 
   const handleOpenGeneralChat = () => {
     navigate('/student/ia');
@@ -17,14 +20,14 @@ const MainLayout = ({ children }) => {
   return (
     <div className="bg-[#f8f9fb] min-h-screen">
       {/* Sidebar con soporte móvil */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar isOpen={sidebarOpen} isPinned={isSidebarPinned} onClose={() => setSidebarOpen(false)} />
 
       {/* Header con toggle de sidebar */}
-      <Header onToggleSidebar={() => setSidebarOpen(true)} />
+      <Header isSidebarPinned={isSidebarPinned} onToggleSidebar={() => setSidebarOpen(true)} />
 
       {/* Contenido principal - responsive */}
-      <main className="lg:ml-[250px] pt-16 transition-[margin] duration-300">
-        <div className="p-4 sm:p-6 lg:p-8">
+      <main className={`pt-16 transition-[margin] duration-300 ${isSidebarPinned ? 'lg:ml-[17rem]' : 'lg:ml-20'}`}>
+        <div className={isCourseWorkspace ? 'p-0' : 'p-4 sm:p-6 lg:p-8'}>
           {children}
         </div>
       </main>

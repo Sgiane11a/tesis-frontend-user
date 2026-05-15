@@ -5,7 +5,7 @@ import { UserProfile } from '../molecules/UserProfile';
 import { useAuth } from '../../../../hooks/useAuth';
 import { NotificationsService } from '../../../../api';
 
-const Header = ({ onToggleSidebar }) => {
+const Header = ({ isSidebarPinned = false, onToggleSidebar }) => {
   const { user } = useAuth();
   const displayName = user ? `${user.nombre}` : 'Alumno';
   const displayRole = user?.rol === 'alumno' ? 'Alumno(a)' : user?.rol || 'Usuario';
@@ -120,7 +120,7 @@ const Header = ({ onToggleSidebar }) => {
   };
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-[250px] h-16 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center justify-between px-4 sm:px-6 lg:px-8 z-30">
+    <header className={`fixed top-0 right-0 left-0 h-16 bg-white/80 backdrop-blur-xl border-b border-gray-100 flex items-center justify-between px-4 sm:px-6 lg:px-8 z-30 ${isSidebarPinned ? 'lg:left-[17rem]' : 'lg:left-20'}`}>
       {/* Lado izquierdo - Menú hamburguesa en móvil */}
       <button
         onClick={onToggleSidebar}
