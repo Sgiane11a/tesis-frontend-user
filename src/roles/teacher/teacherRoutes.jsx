@@ -5,6 +5,7 @@ import TeacherDashboardPage from './pages/TeacherDashboardPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import TeacherCourseTabsPage from './pages/TeacherCourseTabsPage';
 import TeacherIaGeneralPage from './pages/TeacherIaGeneralPage';
+import TeacherProfilePage from './pages/TeacherProfilePage';
 
 export function TeacherRoutes() {
   return (
@@ -21,7 +22,7 @@ export function TeacherRoutes() {
         {/* Futuras rutas del profesor */}
         <Route path="ia" element={<TeacherIaGeneralPage />} />
         <Route path="informes" element={<PlaceholderPage title="Informes" />} />
-        <Route path="perfil" element={<PlaceholderPage title="Perfil" />} />
+        <Route path="perfil" element={<TeacherProfilePage />} />
       </Routes>
     </TeacherMainLayout>
   );
