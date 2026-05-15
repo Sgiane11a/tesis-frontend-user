@@ -1,6 +1,6 @@
 import React from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { CheckCircle2, Trophy, Flame, BarChart3, Star, Brain, BookOpen } from 'lucide-react';
+import { Brain } from 'lucide-react';
 
 const ChallengesSidebar = () => {
   return (
@@ -47,7 +47,7 @@ const ChallengesSidebar = () => {
       </style>
 
       <div
-        className="relative flex justify-center"
+        className="relative flex flex-col items-center"
         style={{ animation: "enterUp 500ms ease-out both" }}
       >
 
@@ -60,7 +60,7 @@ const ChallengesSidebar = () => {
               src="/mascot.json"
               loop
               autoplay
-              style={{ width: "240px", height: "240px" }}
+              style={{ width: "250px", height: "250px" }}
             />
           </div>
 
@@ -90,9 +90,19 @@ const ChallengesSidebar = () => {
           </svg>
 
         </div>
-      </div>
 
+        <div className="mt-2 w-full rounded-2xl border border-sky-100 bg-sky-50/80 px-4 py-3 text-center shadow-sm">
+          <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-sky-700">
+            <Brain className="h-3.5 w-3.5" />
+            Consejo IA
+          </div>
+          <p className="text-sm font-semibold leading-snug text-slate-700">
+            Tu siguiente reto puede ser el impulso que convierta una duda en una nueva habilidad.
+          </p>
+        </div>
+      </div>
     </aside>
+    
   );
 };
 
