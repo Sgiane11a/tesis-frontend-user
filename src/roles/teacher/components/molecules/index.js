@@ -15,5 +15,7 @@ export { ModuleAccordion } from './ModuleAccordion';
 export { MaterialItem } from './MaterialItem';
 export { BimesterSelector } from './BimesterSelector';
 export { StudentListModal } from './StudentListModal';
+export * from './chat';
+export * from './modules';
 export * from './student-list-modal';
 export * from './students';

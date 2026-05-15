@@ -9,4 +9,6 @@ export { Badge } from './Badge';
 export { Skeleton } from './Skeleton';
 export { Input } from './Input';
 export { TabButton } from './TabButton';
+export * from './chat';
+export * from './modules';
 export * from './students';

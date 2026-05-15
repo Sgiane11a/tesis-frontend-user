@@ -1,0 +1,1 @@
+export { useTeacherCourseModules } from './useTeacherCourseModules';
