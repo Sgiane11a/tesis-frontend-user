@@ -21,7 +21,7 @@ const CourseTabNav = ({ courseId, activeTab }) => {
           return (
             <button
               key={tab.key}
-              onClick={() => navigate(`${basePath}/${tab.key}`)}
+              onClick={() => navigate(tab.key === 'modulos' ? `${basePath}/modulos` : `${basePath}/modulos/${tab.key}`)}
               className={`py-3 px-2 text-sm font-semibold rounded-t-md whitespace-nowrap ${
                 isActive
                   ? 'text-sky-700 border-b-4 border-sky-300'

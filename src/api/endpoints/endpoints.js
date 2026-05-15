@@ -12,6 +12,9 @@ export const endpoints = {
     byId: (id) => `/cursos/${id}`,
     byTeacher: (id) => `/cursos/profesores/${id}/cursos`,
   },
+  classrooms: {
+    students: (idAula) => `/aulas/${idAula}/alumnos`,
+  },
   modules: {
     byBimesterCourse: (idBimestre, idCurso, idAula) =>
       `/modulos/bimestre/${idBimestre}/curso/${idCurso}${idAula ? `?id_aula=${idAula}` : ''}`,

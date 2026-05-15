@@ -2,17 +2,17 @@
 
 import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import CourseRetos from '../../student/components/organisms/curso/CourseRetos';
-import CourseChat from '../../student/components/organisms/curso/CourseChat';
-import CourseInfo from '../../student/components/organisms/curso/CourseInfo';
 import { ChevronLeft } from 'lucide-react';
-import BimestreSelect from '../../student/components/atoms/BimestreSelect';
+import BimestreSelect from '../components/atoms/BimestreSelect';
 import { useTeacherCourses } from '../../../hooks/useCourses';
 import TeacherCourseModulesPanel from '../components/organisms/TeacherCourseModulesPanel';
+import TeacherCourseChatPanel from '../components/organisms/TeacherCourseChatPanel';
+import TeacherCourseInfoPanel from '../components/organisms/TeacherCourseInfoPanel';
+import TeacherCourseStudentsPanel from '../components/organisms/TeacherCourseStudentsPanel';
 
 const tabs = [
   { key: 'modulos', label: 'Módulos' },
-  { key: 'retos', label: 'Retos' },
+  { key: 'estudiantes', label: 'Estudiantes' },
   { key: 'chatia', label: 'ChatIA' },
   { key: 'informacion', label: 'Información' },
 ];
@@ -114,9 +114,9 @@ const TeacherCourseTabsPage = () => {
             bimestre={bimestreToNumber(bimestre)}
           />
         )}
-        {(tab || 'modulos') === 'retos' && <CourseRetos />}
-        {(tab || 'modulos') === 'chatia' && <CourseChat />}
-        {(tab || 'modulos') === 'informacion' && <CourseInfo />}
+        {(tab || 'modulos') === 'estudiantes' && <TeacherCourseStudentsPanel course={course} />}
+        {(tab || 'modulos') === 'chatia' && <TeacherCourseChatPanel />}
+        {(tab || 'modulos') === 'informacion' && <TeacherCourseInfoPanel course={course} />}
       </div>
     </div>
   );

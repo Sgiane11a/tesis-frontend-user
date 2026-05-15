@@ -1,22 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Pencil, BookOpen, Users, BrainCircuit, Info } from 'lucide-react';
-import { Text, Button, TabButton, Skeleton } from '../atoms';
+import { ArrowLeft, Pencil, Info } from 'lucide-react';
+import { Text, Button, Skeleton } from '../atoms';
 import { CourseBanner } from '../molecules/CourseBanner';
 import { CourseInfoPanel } from '../molecules/CourseInfoPanel';
 import { CourseDescription } from '../molecules/CourseDescription';
 import { useAuth } from '../../../../hooks/useAuth';
 
-const tabs = [
-  { key: 'modulos', label: 'Módulos', icon: BookOpen },
-  { key: 'estudiantes', label: 'Estudiantes', icon: Users },
-  { key: 'chatia', label: 'ChatIA', icon: BrainCircuit },
-  { key: 'informacion', label: 'Información', icon: Info },
-];
-
 const CourseDetailView = ({ course, isLoading, isEditable }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const aulaQuery = course?.idAula ? `?aula=${course.idAula}` : '';
 
   if (isLoading) {
     return <CourseDetailSkeleton />;
@@ -76,25 +70,25 @@ const CourseDetailView = ({ course, isLoading, isEditable }) => {
       {/* Tabs de navegación */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <button
-          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos`)}
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos${aulaQuery}`)}
           className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
         >
           Módulos
         </button>
         <button
-          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/estudiantes`)}
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos/estudiantes${aulaQuery}`)}
           className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
         >
           Estudiantes
         </button>
         <button
-          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/chatia`)}
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos/chatia${aulaQuery}`)}
           className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
         >
           ChatIA
         </button>
         <button
-          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/informacion`)}
+          onClick={() => navigate(`/teacher/dashboard/course/${course.id}/modulos/informacion${aulaQuery}`)}
           className="h-12 rounded-lg border border-sky-200 bg-sky-50 text-sky-700 font-semibold hover:bg-sky-100 transition-colors"
         >
           Información

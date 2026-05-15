@@ -5,3 +5,4 @@ export { CourseGrid } from './CourseGrid';
 export { SummaryPanel } from './SummaryPanel';
 export { CourseDetailView } from './CourseDetailView';
 export { CourseModulesView } from './CourseModulesView';
+export * from './students';
