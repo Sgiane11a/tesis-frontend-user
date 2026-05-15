@@ -4,6 +4,7 @@ import { TeacherMainLayout } from './layouts/TeacherMainLayout';
 import TeacherDashboardPage from './pages/TeacherDashboardPage';
 import CourseDetailPage from './pages/CourseDetailPage';
 import TeacherCourseTabsPage from './pages/TeacherCourseTabsPage';
+import TeacherIaGeneralPage from './pages/TeacherIaGeneralPage';
 
 export function TeacherRoutes() {
   return (
@@ -18,7 +19,7 @@ export function TeacherRoutes() {
         <Route path="dashboard/course/:courseId/chatia" element={<Navigate to="../modulos/chatia" replace />} />
         <Route path="dashboard/course/:courseId/informacion" element={<Navigate to="../modulos/informacion" replace />} />
         {/* Futuras rutas del profesor */}
-        <Route path="ia" element={<PlaceholderPage title="IA General" />} />
+        <Route path="ia" element={<TeacherIaGeneralPage />} />
         <Route path="informes" element={<PlaceholderPage title="Informes" />} />
         <Route path="perfil" element={<PlaceholderPage title="Perfil" />} />
       </Routes>
