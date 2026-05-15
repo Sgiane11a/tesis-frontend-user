@@ -14,6 +14,9 @@ export const endpoints = {
   },
   classrooms: {
     students: (idAula) => `/aulas/${idAula}/alumnos`,
+    people: (idAula) => `/aulas/${idAula}/personas`,
+    peopleBySection: (grado, seccion) => `/aulas/grado/${grado}/seccion/${seccion}/personas`,
+    coursesTeachers: (idAula) => `/aulas/${idAula}/cursos-profesores`,
   },
   modules: {
     byBimesterCourse: (idBimestre, idCurso, idAula) =>
