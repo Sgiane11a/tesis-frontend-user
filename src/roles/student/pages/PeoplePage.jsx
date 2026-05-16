@@ -77,16 +77,17 @@ const buildTeachersFromEmbeddedCourses = (courses) => {
     if (!course.teacher) return;
 
     const teacher = course.teacher;
-    const key = teacher.id || teacher.email || teacher.name || `course-${course.id}`;
+    const id = teacher.id || teacher.id_usuario || null;
+    const key = id || teacher.email || teacher.correo || teacher.name || `course-${course.id}`;
     const current = grouped.get(key) || {
-      id: teacher.id,
+      id,
       uid: `teacher-${key}`,
       type: 'teacher',
       role: 'Profesor',
       name: teacher.name || 'Profesor',
-      code: teacher.code || '',
-      email: teacher.email || '',
-      phone: teacher.phone || '',
+      code: teacher.code || teacher.codigo || '',
+      email: teacher.email || teacher.correo || '',
+      phone: teacher.phone || teacher.telefono || '',
       grado: course.grado,
       seccion: course.seccion,
       avatarUrl: teacher.avatarUrl || null,
@@ -95,9 +96,9 @@ const buildTeachersFromEmbeddedCourses = (courses) => {
     };
 
     current.courses.push({
-      id: course.id,
-      title: course.title,
-      description: course.description,
+      id: course.id || course.id_curso,
+      title: course.title || course.nombre,
+      description: course.description || course.descripcion || '',
     });
     grouped.set(key, current);
   });
@@ -165,15 +166,13 @@ const PeoplePage = () => {
   });
 
   const classmates = useMemo(() => uniqueBy(
-    classroomProfiles.flatMap((profile) => profile.students || [])
-      .map((student) => ({ ...student, uid: `student-${student.id || student.email || student.name}` })),
-    (student) => student.uid
+    classroomProfiles.flatMap((profile) => profile.students || []),
+    (student) => student.uid || `student-${student.id || student.email || student.name}`
   ), [classroomProfiles]);
 
   const teachersFromBackend = useMemo(() => uniqueBy(
-    classroomProfiles.flatMap((profile) => profile.teachers || [])
-      .map((teacher) => ({ ...teacher, uid: `teacher-${teacher.id || teacher.email || teacher.name}` })),
-    (teacher) => teacher.uid
+    classroomProfiles.flatMap((profile) => profile.teachers || []),
+    (teacher) => teacher.uid || `teacher-${teacher.id || teacher.email || teacher.name}`
   ), [classroomProfiles]);
 
   const teachers = useMemo(() => {

@@ -15,10 +15,12 @@ import {
   UserPen,
   UserRound,
   X,
+  Loader2,
 } from 'lucide-react';
 import { Avatar } from '../atoms/Avatar';
 import { Input } from '../atoms/Input';
 import { Button } from '../atoms/Button';
+import { ProfileService } from '../../../../api';
 
 const emptyProfile = {
   nombre: '',
@@ -109,9 +111,10 @@ const StatCard = ({ value, label, helper }) => (
   </article>
 );
 
-const PersonalInfoCard = ({ user, academic = {}, onSave, saving = false, initialEditing = false }) => {
+const PersonalInfoCard = ({ user, academic = {}, onSave, saving = false, initialEditing = false, onUserUpdate }) => {
   const [form, setForm] = useState(() => buildForm(user));
   const [editing, setEditing] = useState(initialEditing);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const fileRef = useRef(null);
   const fullName = `${form.nombre || ''} ${form.apellido || ''}`.trim() || 'Alumno';
 
@@ -133,15 +136,22 @@ const PersonalInfoCard = ({ user, academic = {}, onSave, saving = false, initial
     setForm((current) => ({ ...current, [field]: event.target.value }));
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setForm((current) => ({ ...current, avatarUrl: reader.result || '' }));
-    };
-    reader.readAsDataURL(file);
+    setUploadingPhoto(true);
+    try {
+      const updated = await ProfileService.uploadProfilePhoto(file);
+      setForm((current) => ({ ...current, avatarUrl: updated.avatarUrl }));
+      onUserUpdate?.(updated);
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      alert('Error al subir la foto. Intenta nuevamente.');
+    } finally {
+      setUploadingPhoto(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
   };
 
   const handleCancel = () => {
@@ -285,14 +295,24 @@ const PersonalInfoCard = ({ user, academic = {}, onSave, saving = false, initial
                 <div className="grid gap-5 lg:grid-cols-[170px_minmax(0,1fr)]">
                   <div className="flex flex-col items-center rounded-xl border border-gray-100 bg-gray-50 p-4 text-center">
                     <Avatar src={form.avatarUrl} name={fullName} className="h-24 w-24 text-2xl" />
-                    <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                    <input ref={fileRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" disabled={uploadingPhoto} />
                     <button
                       type="button"
                       onClick={() => fileRef.current?.click()}
-                      className="mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                      disabled={uploadingPhoto}
+                      className="mt-3 inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Camera className="h-4 w-4" />
-                      Cambiar foto
+                      {uploadingPhoto ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Subiendo...
+                        </>
+                      ) : (
+                        <>
+                          <Camera className="h-4 w-4" />
+                          Cambiar foto
+                        </>
+                      )}
                     </button>
                   </div>
 

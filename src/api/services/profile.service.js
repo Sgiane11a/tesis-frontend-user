@@ -38,6 +38,21 @@ export const ProfileService = {
     }
   },
 
+  async uploadProfilePhoto(file) {
+    if (!file) throw new Error('No file provided')
+    
+    const formData = new FormData()
+    formData.append('foto', file)
+    
+    const data = await apiClient(endpoints.users.perfil, {
+      method: 'PUT',
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+
+    return backendToUser(data?.usuario)
+  },
+
   async updateOwnProfile(values) {
     const data = await apiClient(endpoints.users.perfil, {
       method: 'PUT',

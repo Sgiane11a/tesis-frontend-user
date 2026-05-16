@@ -50,6 +50,14 @@ const ProfilePage = () => {
     }
   };
 
+  const handleUserUpdate = (updated) => {
+    updateUser(updated);
+    queryClient.setQueryData(['student-profile', sessionUser.id], (current) => ({
+      ...(current || {}),
+      user: updated,
+    }));
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
@@ -110,6 +118,7 @@ const ProfilePage = () => {
         saving={savingProfile}
         initialEditing={shouldEdit}
         onSave={handleSaveProfile}
+        onUserUpdate={handleUserUpdate}
       />
     </div>
   );

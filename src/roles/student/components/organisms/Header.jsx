@@ -114,7 +114,7 @@ const PasswordModal = ({ open, onClose, onSaved }) => {
 const Header = ({ isSidebarPinned = false, onToggleSidebar }) => {
   const { user, updateUser } = useAuth();
   const navigate = useNavigate();
-  const displayName = user ? `${user.nombre}` : 'Alumno';
+  const displayName = user ? `${user.nombre ?? ''} ${user.apellido ?? ''}`.trim() || 'Alumno' : 'Alumno';
   const displayRole = user?.rol === 'alumno' ? 'Alumno(a)' : user?.rol || 'Usuario';
   const [openNotifications, setOpenNotifications] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);

@@ -12,6 +12,7 @@ const backendToClassmate = (raw, classroom = {}) => {
 
   return {
     id,
+    uid: `student-${id || raw?.correo || raw?.email || Math.random()}`,
     type: 'student',
     role: 'Alumno',
     name: fullName(raw),
@@ -51,6 +52,7 @@ const backendCourseTeacherToPeople = (courses = [], classroom = {}) => {
       const key = id || teacher?.correo || `${teacher?.nombre ?? ''}-${teacher?.apellido ?? ''}`;
       const existing = teachers.get(key) || {
         id,
+        uid: `teacher-${key}`,
         type: 'teacher',
         role: 'Profesor',
         name: fullName(teacher) || 'Profesor',
@@ -81,6 +83,7 @@ const backendTeacherToPerson = (raw, classroom = {}) => {
 
   return {
     id,
+    uid: `teacher-${id || raw?.correo || raw?.email || Math.random()}`,
     type: 'teacher',
     role: 'Profesor',
     name: fullName(raw) || 'Profesor',
