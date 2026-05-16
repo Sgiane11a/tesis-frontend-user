@@ -1,3 +1,5 @@
+import { resolveAssetUrl } from '../utils/assetUrl.js'
+
 export function backendToUser(b) {
   if (!b) return null
   return {
@@ -13,7 +15,7 @@ export function backendToUser(b) {
     fechaNacimiento: b.fecha_nacimiento ?? b.fechaNacimiento ?? '',
     genero: b.genero ?? '',
     documentoIdentidad: b.documento_identidad ?? b.documentoIdentidad ?? '',
-    avatarUrl: b.url_foto ?? b.avatarUrl ?? '',
+    avatarUrl: resolveAssetUrl(b.url_foto ?? b.avatarUrl),
     biografia: b.biografia ?? b.bio ?? '',
     apoderadoNombre: b.apoderado_nombre ?? b.apoderadoNombre ?? '',
     apoderadoParentesco: b.apoderado_parentesco ?? b.apoderadoParentesco ?? '',

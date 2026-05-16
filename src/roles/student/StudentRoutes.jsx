@@ -20,7 +20,9 @@ const StudentRoutes = () => {
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="ia" element={<IaGeneralPage />} />
         <Route path="people" element={<PeoplePage />} />
+        <Route path="personas" element={<PeoplePage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="perfil" element={<ProfilePage />} />
 
         {/* Ruta del curso y subpaginas */}
         <Route path="dashboard/course/:courseId" element={<CoursePage />}>

@@ -1,5 +1,6 @@
 import apiClient from '../client/index.js';
 import { endpoints } from '../endpoints/endpoints.js';
+import { resolveAssetUrl } from '../utils/assetUrl.js';
 
 const fullName = (raw) => {
   const joined = `${raw?.nombre ?? ''} ${raw?.apellido ?? ''}`.trim();
@@ -17,10 +18,18 @@ const backendToClassmate = (raw, classroom = {}) => {
     code: raw?.codigo ?? raw?.cod_alumno ?? '',
     email: raw?.correo ?? raw?.email ?? '',
     phone: raw?.telefono ?? raw?.phone ?? '',
+    birthDate: raw?.fecha_nacimiento ?? raw?.fechaNacimiento ?? '',
+    biography: raw?.biografia ?? raw?.biography ?? '',
+    allergies: raw?.alergias ?? raw?.allergies ?? '',
+    emergencyContact: {
+      name: raw?.contacto_emergencia_nombre ?? '',
+      relationship: raw?.contacto_emergencia_parentesco ?? '',
+      phone: raw?.contacto_emergencia_telefono ?? '',
+    },
     grado: raw?.grado ?? classroom.grado ?? null,
     seccion: raw?.seccion ?? classroom.seccion ?? null,
     idAula: raw?.id_aula ?? classroom.idAula ?? null,
-    avatarUrl: raw?.url_foto ?? raw?.avatar_url ?? null,
+    avatarUrl: resolveAssetUrl(raw?.url_foto ?? raw?.avatar_url),
     raw,
   };
 };
@@ -48,10 +57,12 @@ const backendCourseTeacherToPeople = (courses = [], classroom = {}) => {
         code: teacher?.codigo ?? '',
         email: teacher?.correo ?? teacher?.email ?? '',
         phone: teacher?.telefono ?? teacher?.phone ?? '',
+        birthDate: teacher?.fecha_nacimiento ?? teacher?.fechaNacimiento ?? '',
+        biography: teacher?.biografia ?? teacher?.biography ?? '',
         grado: classroom.grado ?? null,
         seccion: classroom.seccion ?? null,
         idAula: classroom.idAula ?? null,
-        avatarUrl: teacher?.url_foto ?? teacher?.avatar_url ?? null,
+        avatarUrl: resolveAssetUrl(teacher?.url_foto ?? teacher?.avatar_url),
         courses: [],
         raw: teacher,
       };
@@ -76,10 +87,12 @@ const backendTeacherToPerson = (raw, classroom = {}) => {
     code: raw?.codigo ?? '',
     email: raw?.correo ?? raw?.email ?? '',
     phone: raw?.telefono ?? raw?.phone ?? '',
+    birthDate: raw?.fecha_nacimiento ?? raw?.fechaNacimiento ?? '',
+    biography: raw?.biografia ?? raw?.biography ?? '',
     grado: raw?.grado ?? classroom.grado ?? null,
     seccion: raw?.seccion ?? classroom.seccion ?? null,
     idAula: raw?.id_aula ?? classroom.idAula ?? null,
-    avatarUrl: raw?.url_foto ?? raw?.avatar_url ?? null,
+    avatarUrl: resolveAssetUrl(raw?.url_foto ?? raw?.avatar_url),
     courses: courses.map((course) => ({
       id: course?.id_curso ?? course?.id ?? null,
       title: course?.nombre ?? course?.title ?? 'Curso',
@@ -92,10 +105,19 @@ const backendTeacherToPerson = (raw, classroom = {}) => {
 export const StudentPeopleService = {
   async getStudentClassrooms(studentId) {
     if (!studentId) return [];
-    const data = await apiClient(endpoints.users.byId(studentId), { method: 'GET' });
-    const aulas = Array.isArray(data?.aulas) ? data.aulas : [];
-    const aulaAsignada = data?.aula_asignada ? [data.aula_asignada] : [];
-    const source = aulas.length > 0 ? aulas : aulaAsignada;
+    const data = await apiClient(endpoints.users.cursosDeAlumno(studentId), { method: 'GET' });
+    const aulasFromCourses = (Array.isArray(data?.cursos) ? data.cursos : [])
+      .filter((course) => course?.id_aula || course?.grado || course?.seccion)
+      .map((course) => ({
+        id_aula: course.id_aula ?? null,
+        grado: course.grado ?? null,
+        seccion: course.seccion ?? null,
+      }));
+    const source = [
+      ...(data?.aula_asignada ? [data.aula_asignada] : []),
+      ...aulasFromCourses,
+    ];
+    const seen = new Set();
 
     return source.map((aula) => {
       const idAula = aula?.id_aula ?? aula?.idAula ?? null;
@@ -106,6 +128,11 @@ export const StudentPeopleService = {
         seccion: aula?.seccion ?? null,
         key: idAula ? `aula-${idAula}` : `${aula?.grado || 'grado'}-${aula?.seccion || 'seccion'}`,
       };
+    }).filter((aula) => {
+      if (!aula.idAula && (!aula.grado || !aula.seccion)) return false;
+      if (seen.has(aula.key)) return false;
+      seen.add(aula.key);
+      return true;
     });
   },
 

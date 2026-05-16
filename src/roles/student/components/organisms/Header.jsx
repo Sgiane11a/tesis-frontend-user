@@ -382,7 +382,7 @@ const Header = ({ isSidebarPinned = false, onToggleSidebar }) => {
           </div>
 
           <div className="hidden h-8 w-px bg-gray-200 sm:block" />
-          <UserProfile name={displayName} role={displayRole} />
+          <UserProfile name={displayName} role={displayRole} avatarUrl={user?.avatarUrl} />
         </div>
       </header>
 

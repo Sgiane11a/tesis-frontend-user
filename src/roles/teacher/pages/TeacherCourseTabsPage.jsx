@@ -56,6 +56,11 @@ const TeacherCourseTabsPage = () => {
   };
 
   const activeTab = tab || 'modulos';
+  const panelPaddingClass = activeTab === 'chatia'
+    ? 'p-0'
+    : activeTab === 'estudiantes'
+      ? 'px-4 pt-4 pb-2 md:px-5 md:pt-5 md:pb-2'
+      : 'p-4 md:p-5';
 
   return (
     <div className="w-full min-w-0">
@@ -97,7 +102,7 @@ const TeacherCourseTabsPage = () => {
         </div>
       </div>
 
-      <div className={`bg-gradient-to-b from-white to-gray-50 rounded-b-xl shadow-sm min-w-0 ${activeTab === 'chatia' ? 'p-0' : 'p-4 md:p-5'}`}>
+      <div className={`bg-gradient-to-b from-white to-gray-50 rounded-b-xl shadow-sm min-w-0 ${panelPaddingClass}`}>
         {activeTab !== 'chatia' && <div className="flex items-center justify-between mb-4">
           <h1 className="text-lg md:text-xl font-semibold text-gray-700">{courseTitle}</h1>
           {activeTab === 'modulos' && (

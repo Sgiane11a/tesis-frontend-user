@@ -2,9 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   BookOpen,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   GraduationCap,
+  HeartPulse,
+  IdCard,
   Mail,
+  Phone,
   Search,
+  Shield,
   UserRound,
   Users,
 } from 'lucide-react';
@@ -12,6 +19,8 @@ import { StudentPeopleService } from '../../../api';
 import { useStudentCourses } from '../../../hooks/useCourses';
 import { useAuth } from '../../../hooks/useAuth';
 import { Avatar } from '../components/atoms/Avatar';
+
+const PEOPLE_PAGE_SIZE = 6;
 
 const normalizeText = (value) => `${value ?? ''}`.toLowerCase().trim();
 
@@ -33,6 +42,32 @@ const classroomLabel = (item) => {
   const grado = item?.grado ? `${item.grado} grado` : 'Grado no definido';
   const seccion = item?.seccion ? `Seccion ${item.seccion}` : 'Seccion no definida';
   return `${grado} - ${seccion}`;
+};
+
+const formatValue = (value) => {
+  if (value === null || value === undefined || `${value}`.trim() === '') return 'No registrado';
+  return `${value}`;
+};
+
+const formatDate = (value) => {
+  if (!value) return 'No registrado';
+  const date = new Date(`${value}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('es-PE', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+};
+
+const emergencyContactText = (contact = {}) => {
+  const parts = [
+    contact.name,
+    contact.relationship ? `(${contact.relationship})` : '',
+    contact.phone,
+  ].filter(Boolean);
+
+  return parts.length > 0 ? parts.join(' ') : 'No registrado';
 };
 
 const buildTeachersFromEmbeddedCourses = (courses) => {
@@ -76,6 +111,7 @@ const PeoplePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeType, setActiveType] = useState('all');
   const [selectedUid, setSelectedUid] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     data: profileClassrooms = [],
@@ -181,18 +217,33 @@ const PeoplePage = () => {
     });
   }, [activeType, people, searchTerm]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredPeople.length / PEOPLE_PAGE_SIZE));
+
+  const paginatedPeople = useMemo(() => {
+    const start = (currentPage - 1) * PEOPLE_PAGE_SIZE;
+    return filteredPeople.slice(start, start + PEOPLE_PAGE_SIZE);
+  }, [currentPage, filteredPeople]);
+
   const selectedPerson = useMemo(
     () => filteredPeople.find((person) => person.uid === selectedUid) || filteredPeople[0] || null,
     [filteredPeople, selectedUid]
   );
 
   useEffect(() => {
-    const selectedIsVisible = filteredPeople.some((person) => person.uid === selectedUid);
+    const selectedIsVisible = paginatedPeople.some((person) => person.uid === selectedUid);
 
-    if ((!selectedUid || !selectedIsVisible) && filteredPeople[0]?.uid) {
-      setSelectedUid(filteredPeople[0].uid);
+    if ((!selectedUid || !selectedIsVisible) && paginatedPeople[0]?.uid) {
+      setSelectedUid(paginatedPeople[0].uid);
     }
-  }, [filteredPeople, selectedUid]);
+  }, [paginatedPeople, selectedUid]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeType, searchTerm]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
 
   const loading = coursesLoading || profileLoading || peopleLoading;
   const hasError = profileError || peopleError;
@@ -234,8 +285,8 @@ const PeoplePage = () => {
         </div>
       </header>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <main className="min-w-0 rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+        <main className="flex min-w-0 flex-col rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="border-b border-gray-200 p-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative min-w-0 flex-1">
@@ -271,7 +322,7 @@ const PeoplePage = () => {
             </div>
           </div>
 
-          <div className="min-h-[500px]">
+          <div className="flex flex-1 flex-col xl:min-h-0 overflow-y-auto">
             {loading ? (
               <PeopleState title="Cargando personas" detail="Consultando alumnos y profesores del aula." />
             ) : hasError ? (
@@ -280,12 +331,21 @@ const PeoplePage = () => {
               <PeopleState title="Sin resultados" detail="No hay personas que coincidan con los filtros actuales." />
             ) : (
               <PeopleTable
-                people={filteredPeople}
+                people={paginatedPeople}
                 selectedUid={selectedPerson?.uid}
                 onSelect={setSelectedUid}
               />
             )}
           </div>
+          {filteredPeople.length > 0 && (
+            <PeoplePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={filteredPeople.length}
+              pageSize={PEOPLE_PAGE_SIZE}
+              onPageChange={setCurrentPage}
+            />
+          )}
         </main>
 
         <PersonDetail person={selectedPerson} />
@@ -346,6 +406,44 @@ const PeopleTable = ({ people, selectedUid, onSelect }) => (
   </div>
 );
 
+const PeoplePagination = ({ currentPage, totalPages, totalItems, pageSize, onPageChange }) => {
+  const start = totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, totalItems);
+
+  return (
+    <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="text-sm text-gray-500">
+        Mostrando <span className="font-semibold text-gray-700">{start}-{end}</span> de{' '}
+        <span className="font-semibold text-gray-700">{totalItems}</span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="Pagina anterior"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <span className="min-w-24 text-center text-sm font-semibold text-gray-700">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label="Pagina siguiente"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const RoleBadge = ({ type }) => (
   <span
     className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
@@ -359,7 +457,7 @@ const RoleBadge = ({ type }) => (
 );
 
 const PeopleState = ({ title, detail }) => (
-  <div className="flex min-h-[500px] flex-col items-center justify-center px-6 text-center">
+  <div className="flex flex-1 flex-col items-center justify-center px-6 text-center xl:min-h-0">
     <Users className="mb-3 h-10 w-10 text-gray-300" />
     <h2 className="text-base font-semibold text-gray-800">{title}</h2>
     <p className="mt-1 text-sm text-gray-500">{detail}</p>
@@ -367,11 +465,11 @@ const PeopleState = ({ title, detail }) => (
 );
 
 const PersonDetail = ({ person }) => (
-  <aside className="rounded-xl border border-gray-200 bg-white shadow-sm">
+  <aside className="rounded-xl border border-gray-200 bg-white shadow-sm xl:overflow-hidden">
     {!person ? (
       <PeopleState title="Selecciona una persona" detail="Aqui se mostrara el detalle disponible." />
     ) : (
-      <div className="p-5">
+      <div className="h-full overflow-y-auto p-5">
         <div className="flex items-start gap-4">
           <Avatar name={person.name} src={person.avatarUrl} size="xl" />
           <div className="min-w-0 flex-1">
@@ -385,93 +483,85 @@ const PersonDetail = ({ person }) => (
           </div>
         </div>
 
-        <div className="mt-5 space-y-3">
-          <DetailRow icon={UserRound} label="Aula" value={classroomLabel(person)} />
-          <DetailRow icon={Mail} label="Correo" value={person.email || 'No registrado'} />
-          <DetailRow icon={BookOpen} label={person.type === 'teacher' ? 'Cursos' : 'Codigo'} value={
-            person.type === 'teacher'
-              ? person.courses?.map((course) => course.title).join(', ') || 'No registrado'
-              : person.code || 'No registrado'
-          } />
-        </div>
-
-        {person.courses?.length > 0 && (
-          <div className="mt-5 border-t border-gray-100 pt-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Asignacion por curso</div>
-            <div className="mt-3 space-y-2">
-              {person.courses.map((course) => (
-                <div key={course.id || course.title} className="rounded-lg border border-gray-200 px-3 py-2">
-                  <div className="text-sm font-semibold text-gray-800">{course.title}</div>
-                  {course.description && (
-                    <div className="mt-1 line-clamp-2 text-xs text-gray-500">{course.description}</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <BackendFields raw={person.raw} />
+        {person.type === 'teacher' ? <TeacherDetailFields person={person} /> : <StudentDetailFields person={person} />}
       </div>
     )}
   </aside>
 );
 
-const DetailRow = ({ icon: Icon, label, value }) => (
-  <div className="flex gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
-    {React.createElement(Icon, { className: 'mt-0.5 h-4 w-4 shrink-0 text-gray-400' })}
-    <div className="min-w-0">
-      <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">{label}</div>
-      <div className="mt-0.5 break-words text-sm text-gray-800">{value}</div>
+const StudentDetailFields = ({ person }) => (
+  <div className="mt-5 space-y-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg  border border-gray-200 bg-gray-50/70 p-4">
+      <DetailRow icon={UserRound} label="Aula" value={classroomLabel(person)} />
+      <DetailRow icon={IdCard} label="Codigo" value={formatValue(person.code)} />
+      <DetailRow icon={Mail} label="Correo" value={formatValue(person.email)} className="col-span-2" />
+      <DetailRow icon={CalendarDays} label="Nacimiento" value={formatDate(person.birthDate)} />
+      <DetailRow icon={HeartPulse} label="Alergias" value={formatValue(person.allergies)} />
+    </div>
+
+    <DetailBlock icon={BookOpen} label="Biografia" value={formatValue(person.biography)} />
+
+    <div className="rounded-lg border border-sky-100 bg-sky-50/70 p-4">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-sky-700">
+        <Shield className="h-4 w-4" />
+        Contacto de emergencia
+      </div>
+      <p className="mt-2 text-sm leading-relaxed text-slate-700">
+        {emergencyContactText(person.emergencyContact)}
+      </p>
     </div>
   </div>
 );
 
-const BackendFields = ({ raw }) => {
-  const hidden = new Set([
-    'id',
-    'id_usuario',
-    'id_alumno',
-    'id_profesor',
-    'nombre',
-    'apellido',
-    'nombre_completo',
-    'name',
-    'codigo',
-    'correo',
-    'email',
-    'telefono',
-    'phone',
-    'grado',
-    'seccion',
-    'id_aula',
-    'url_foto',
-    'avatar_url',
-  ]);
-
-  const entries = Object.entries(raw || {})
-    .filter(([key, value]) => !hidden.has(key) && value !== null && value !== undefined && `${value}` !== '')
-    .slice(0, 6);
-
-  if (entries.length === 0) return null;
-
-  return (
-    <div className="mt-5 border-t border-gray-100 pt-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Datos disponibles</div>
-      <div className="mt-3 space-y-2">
-        {entries.map(([key, value]) => (
-          <div key={key} className="rounded-lg border border-gray-200 px-3 py-2">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">
-              {key.replaceAll('_', ' ')}
-            </div>
-            <div className="mt-0.5 break-words text-sm text-gray-800">
-              {Array.isArray(value) ? `${value.length} elementos` : `${value}`}
-            </div>
-          </div>
-        ))}
-      </div>
+const TeacherDetailFields = ({ person }) => (
+  <div className="mt-5 space-y-4">
+    <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg border border-gray-200 bg-gray-50/70 p-4">
+      <DetailRow
+        icon={BookOpen}
+        label="Curso en esta aula"
+        value={person.courses?.map((course) => course.title).join(', ') || 'No registrado'}
+        className="col-span-2"
+      />
+      <DetailRow icon={Phone} label="Telefono" value={formatValue(person.phone)} />
+      <DetailRow icon={Mail} label="Correo" value={formatValue(person.email)} />
+      <DetailRow icon={CalendarDays} label="Nacimiento" value={formatDate(person.birthDate)} />
     </div>
-  );
-};
+
+    <DetailBlock icon={UserRound} label="Biografia" value={formatValue(person.biography)} />
+
+    {person.courses?.length > 0 && (
+      <div>
+        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Asignacion por curso</div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {person.courses.map((course) => (
+            <span key={course.id || course.title} className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+              {course.title}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+const DetailRow = ({ icon: Icon, label, value, className = '' }) => (
+  <div className={`flex min-w-0 gap-2 ${className}`}>
+    {React.createElement(Icon, { className: 'mt-0.5 h-4 w-4 shrink-0 text-gray-400' })}
+    <div className="min-w-0">
+      <div className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">{label}</div>
+      <div className="mt-0.5 break-words text-sm font-medium text-gray-800">{value}</div>
+    </div>
+  </div>
+);
+
+const DetailBlock = ({ icon: Icon, label, value }) => (
+  <div>
+    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+      {React.createElement(Icon, { className: 'h-4 w-4 text-gray-400' })}
+      {label}
+    </div>
+    <p className="mt-2 line-clamp-4 text-sm leading-relaxed text-gray-700">{value}</p>
+  </div>
+);
 
 export default PeoplePage;

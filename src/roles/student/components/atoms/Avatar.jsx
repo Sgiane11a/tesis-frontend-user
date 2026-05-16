@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const sizeMap = {
   sm: 'w-8 h-8 text-xs',
@@ -8,19 +8,25 @@ const sizeMap = {
 };
 
 const Avatar = ({ name = '', src, size = 'md', className = '' }) => {
+  const [imageFailed, setImageFailed] = useState(false);
   const initials = name
     .split(' ')
     .map((n) => n[0])
     .slice(0, 2)
     .join('')
     .toUpperCase();
+  const showImage = src && !imageFailed;
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [src]);
 
   return (
     <div
       className={`rounded-full bg-gradient-to-br from-primary-light to-indigo-200 text-primary-dark overflow-hidden flex items-center justify-center shrink-0 font-semibold ${sizeMap[size] || sizeMap.md} ${className}`}
     >
-      {src ? (
-        <img src={src} alt={name} className="w-full h-full object-cover" />
+      {showImage ? (
+        <img src={src} alt={name} className="w-full h-full object-cover" onError={() => setImageFailed(true)} />
       ) : (
         <span>{initials || '?'}</span>
       )}

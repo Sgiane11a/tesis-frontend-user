@@ -1,3 +1,5 @@
+import { resolveAssetUrl } from '../utils/assetUrl.js'
+
 /**
  * Transforma un curso del backend al formato usado en el frontend.
  * @param {object} raw - Objeto crudo del backend
@@ -24,7 +26,7 @@ export function backendToCourse(raw) {
       name: teacherName || teacher?.nombre_completo || teacher?.name || 'Profesor',
       email: teacher?.correo ?? teacher?.email ?? raw.profesor_correo ?? raw.docente_correo ?? '',
       code: teacher?.codigo ?? raw.profesor_codigo ?? raw.docente_codigo ?? '',
-      avatarUrl: teacher?.url_foto ?? teacher?.avatar_url ?? null,
+      avatarUrl: resolveAssetUrl(teacher?.url_foto ?? teacher?.avatar_url),
     } : null,
   }
 }
