@@ -11,6 +11,7 @@ const MainLayout = ({ children }) => {
   const showChatShortcut = location.pathname === '/student/dashboard';
   const isCourseWorkspace = location.pathname.startsWith('/student/dashboard/course/');
   const isGeneralChat = location.pathname === '/student/ia';
+  const isProfileRoute = location.pathname === '/student/profile';
   const isRetosRoute = /^\/student\/dashboard\/course\/[^/]+\/retos\/?$/.test(location.pathname);
   const isSidebarPinned = !isRetosRoute;
 
@@ -28,8 +29,15 @@ const MainLayout = ({ children }) => {
 
       {/* Contenido principal - responsive */}
       <main className={`pt-16 transition-[margin] duration-300 ${isSidebarPinned ? 'lg:ml-[17rem]' : 'lg:ml-20'}`}>
-        <div className={isCourseWorkspace || isGeneralChat ? 'p-0' : 'p-4 sm:p-6 lg:p-8'}>
-          {children}
+<div
+  className={`bg-white ${
+    isCourseWorkspace || isGeneralChat
+      ? 'p-0'
+      : isProfileRoute
+      ? 'p-3 sm:p-4 lg:p-4'
+      : 'p-4 sm:p-6 lg:p-8'
+  }`}
+>          {children}
         </div>
       </main>
 

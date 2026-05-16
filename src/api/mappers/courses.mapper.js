@@ -5,7 +5,7 @@
  */
 export function backendToCourse(raw) {
   if (!raw) return null
-  const teacher = raw.profesor ?? raw.docente ?? raw.teacher ?? null
+  const teacher = raw.profesor ?? raw.docente ?? raw.teacher ?? raw.profesores?.[0] ?? raw.Profesores?.[0] ?? null
   const teacherName = teacher
     ? `${teacher.nombre ?? ''} ${teacher.apellido ?? ''}`.trim()
     : (raw.profesor_nombre ?? raw.docente_nombre ?? raw.nombre_profesor ?? raw.teacher_name ?? '')

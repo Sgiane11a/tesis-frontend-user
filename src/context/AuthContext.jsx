@@ -56,6 +56,10 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  const updateUser = useCallback((partialUser) => {
+    setUser((current) => ({ ...(current || {}), ...(partialUser || {}) }))
+  }, [])
+
   /** Obtener la ruta de redirección según el rol */
   const getRedirectPath = useCallback((rol) => {
     return ROLE_REDIRECT[rol] || '/'
@@ -68,6 +72,7 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
     login,
     logout,
+    updateUser,
     getRedirectPath,
     setError,
   }

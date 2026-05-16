@@ -21,6 +21,7 @@ const CoursePage = () => {
   const isOverview = !!useMatch('/student/dashboard/course/:courseId');
   const activeTab = location.pathname.split('/').filter(Boolean).at(-1);
   const isChatTab = activeTab === 'chatia';
+  const showBimestreSelect = activeTab === 'modulos';
 
   const course = useMemo(
     () => courses.find((item) => String(item.id) === String(courseId)),
@@ -49,7 +50,7 @@ const CoursePage = () => {
         </>
       ) : (
         <>
-          <div className="sticky top-16 z-20 border-b border-sky-100 bg-white/95 shadow-sm backdrop-blur">
+          <div className="bg-white rounded-t-xl border-b border-sky-100">
             <div className="flex items-center justify-between gap-3 overflow-x-auto px-3 md:px-4">
               <div className="flex min-w-max items-center gap-2">
                 <button
@@ -79,15 +80,17 @@ const CoursePage = () => {
                   ))}
                 </nav>
               </div>
-              <BimestreSelect
-                value={bimestre}
-                onChange={(e) => setBimestre(e.target.value)}
-                className="shrink-0 text-sm text-gray-500"
-              />
+              {showBimestreSelect && (
+                <BimestreSelect
+                  value={bimestre}
+                  onChange={(e) => setBimestre(e.target.value)}
+                  className="shrink-0 text-sm text-gray-500"
+                />
+              )}
             </div>
           </div>
 
-          <div className={`min-w-0 bg-gradient-to-b from-white to-gray-50 shadow-sm ${isChatTab ? 'p-0' : 'p-4 md:p-5'}`}>
+          <div className={`min-w-0 rounded-b-xl bg-gradient-to-b from-white to-gray-50 shadow-sm ${isChatTab ? 'p-0' : 'p-4 md:p-5'}`}>
             <Outlet context={{ courseId, aulaId: course?.idAula ?? null, bimestre, course }} />
           </div>
         </>
