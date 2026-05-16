@@ -3,10 +3,10 @@ import { useOutletContext } from 'react-router-dom';
 import CourseRetos from '../../components/organisms/curso/CourseRetos';
 
 const RetosPage = () => {
-  const { course } = useOutletContext();
+  const { aulaId, bimestre, course, courseId } = useOutletContext();
 
   return (
-    <CourseRetos course={course} />
+    <CourseRetos course={course} courseId={courseId} aulaId={aulaId} bimestre={bimestre} />
   );
 };
 

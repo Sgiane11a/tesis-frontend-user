@@ -7,7 +7,7 @@ const difficultyStyles = {
   Difícil: 'bg-rose-50 text-rose-700',
 };
 
-const ChallengeCard = ({ challenge, accent = 'from-sky-500 to-indigo-500' }) => {
+const ChallengeCard = ({ challenge, accent = 'from-sky-500 to-indigo-500', onPlay }) => {
   const Icon = challenge.icon;
 
   return (
@@ -42,6 +42,7 @@ const ChallengeCard = ({ challenge, accent = 'from-sky-500 to-indigo-500' }) => 
 
       <button
         type="button"
+        onClick={() => onPlay?.(challenge)}
         className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-sky-600 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-700"
       >
         <Play className="h-4 w-4" />

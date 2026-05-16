@@ -1,7 +1,7 @@
 import React from 'react';
 import ChallengeCard from './ChallengeCard';
 
-const ChallengeLevelSection = ({ level, challenges }) => (
+const ChallengeLevelSection = ({ level, challenges, onPlayChallenge }) => (
   <section className={`rounded-2xl border ${level.border} ${level.bg} p-4`}>
     <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
       <div>
@@ -14,7 +14,12 @@ const ChallengeLevelSection = ({ level, challenges }) => (
 
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {challenges.map((challenge) => (
-        <ChallengeCard key={challenge.id} challenge={challenge} accent={level.accent} />
+        <ChallengeCard
+          key={challenge.id}
+          challenge={challenge}
+          accent={level.accent}
+          onPlay={onPlayChallenge}
+        />
       ))}
     </div>
   </section>
