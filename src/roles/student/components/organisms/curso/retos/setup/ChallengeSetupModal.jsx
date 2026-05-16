@@ -1,24 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Bot,
   Check,
   Clock,
   Layers3,
   Play,
+  ListChecks,
   Shield,
   Sparkles,
   Timer,
-  UserRound,
   X,
 } from 'lucide-react';
-
-const getQuestionCount = (challenge) => {
-  if (challenge?.questions) return challenge.questions;
-  const difficulty = String(challenge?.difficulty || '').toLowerCase();
-  if (difficulty.includes('dif')) return 12;
-  if (difficulty.includes('medio')) return 8;
-  return 5;
-};
 
 const moduleScopeOptions = [
   {
@@ -32,6 +24,8 @@ const moduleScopeOptions = [
     description: 'Elige dos o mas modulos para mezclar temas.',
   },
 ];
+
+const questionCountOptions = [10, 15, 20];
 
 const modeOptions = [
   {
@@ -65,21 +59,18 @@ const companionOptions = [
     id: 'ai-tutor',
     title: 'Tutor IA',
     description: 'Pistas claras cuando te atasques.',
-    icon: Bot,
     swatch: 'bg-sky-500',
   },
   {
     id: 'fun-mascot',
     title: 'Mascota divertida',
     description: 'Animo visual y mensajes ligeros.',
-    icon: Sparkles,
     swatch: 'bg-amber-400',
   },
   {
     id: 'virtual-teacher',
     title: 'Profesor virtual',
     description: 'Explicaciones formales y paso a paso.',
-    icon: UserRound,
     swatch: 'bg-emerald-500',
   },
 ];
@@ -113,8 +104,8 @@ const ChallengeSetupModal = ({
   const [selectedModuleIds, setSelectedModuleIds] = useState([]);
   const [mode, setMode] = useState('normal');
   const [companion, setCompanion] = useState('ai-tutor');
+  const [questionCount, setQuestionCount] = useState(10);
 
-  const questionCount = useMemo(() => getQuestionCount(challenge), [challenge]);
   const canCombineModules = modules.length > 1;
   const availableScopeOptions = canCombineModules
     ? moduleScopeOptions
@@ -142,6 +133,10 @@ const ChallengeSetupModal = ({
       return validSelection.length > 0 ? validSelection : moduleIds.slice(0, Math.min(2, moduleIds.length));
     });
   }, [canCombineModules, challenge, moduleScope, modules]);
+
+  useEffect(() => {
+    if (challenge) setQuestionCount(10);
+  }, [challenge]);
 
   if (!challenge) {
     return null;
@@ -292,6 +287,30 @@ const ChallengeSetupModal = ({
 
             <section>
               <div className="mb-3 flex items-center gap-2">
+                <ListChecks className="h-4 w-4 text-sky-600" />
+                <h3 className="text-sm font-bold text-slate-950">Cantidad de preguntas</h3>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {questionCountOptions.map((option) => {
+                  const isSelected = questionCount === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => setQuestionCount(option)}
+                      className={selectableCardClass(isSelected)}
+                    >
+                      {isSelected && <SelectionMark />}
+                      <span className="block pr-7 text-lg font-black text-slate-950">{option}</span>
+                      <span className="mt-1 block text-xs leading-relaxed text-slate-500">preguntas</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section>
+              <div className="mb-3 flex items-center gap-2">
                 <Clock className="h-4 w-4 text-sky-600" />
                 <h3 className="text-sm font-bold text-slate-950">Modalidad</h3>
               </div>
@@ -323,7 +342,6 @@ const ChallengeSetupModal = ({
               </div>
               <div className="grid gap-3 md:grid-cols-3">
                 {companionOptions.map((option) => {
-                  const Icon = option.icon;
                   const isSelected = companion === option.id;
                   return (
                     <button
@@ -333,9 +351,7 @@ const ChallengeSetupModal = ({
                       className={selectableCardClass(isSelected)}
                     >
                       {isSelected && <SelectionMark />}
-                      <div className={`mb-3 flex h-20 items-center justify-center rounded-lg ${option.swatch} text-white`}>
-                        <Icon className="h-8 w-8" />
-                      </div>
+                      <div className={`mb-3 h-20 rounded-lg ${option.swatch}`} />
                       <span className="block pr-7 text-sm font-bold text-slate-950">{option.title}</span>
                       <span className="mt-1 block text-xs leading-relaxed text-slate-500">{option.description}</span>
                     </button>

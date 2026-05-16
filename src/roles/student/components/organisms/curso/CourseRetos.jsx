@@ -7,6 +7,7 @@ import ChallengesHero from './retos/hero/ChallengesHero';
 import ChallengeFilters from './retos/filters/ChallengeFilters';
 import ChallengesSidebar from './retos/sidebar/ChallengesSidebar';
 import ChallengeSetupModal from './retos/setup/ChallengeSetupModal';
+import QuizModeExperience from './retos/quiz/QuizModeExperience';
 import { challengesByLevel, challengeLevels } from './retos/data/challengeCatalog';
 import { TeacherModulesService } from '../../../../../api';
 
@@ -35,10 +36,11 @@ const toBimestreNumber = (label) => {
   return 1;
 };
 
-const CourseRetos = ({ aulaId, bimestre, course, courseId }) => {
+const CourseRetos = ({ aulaId, bimestre, course, courseId, setCourseChromeHidden }) => {
   const [activeFilter, setActiveFilter] = useState('base');
   const [sort, setSort] = useState('recommended');
   const [selectedChallenge, setSelectedChallenge] = useState(null);
+  const [activeQuizSetup, setActiveQuizSetup] = useState(null);
   const [modules, setModules] = useState([]);
   const [modulesLoading, setModulesLoading] = useState(false);
   const [modulesError, setModulesError] = useState('');
@@ -98,6 +100,16 @@ const CourseRetos = ({ aulaId, bimestre, course, courseId }) => {
     };
   }, [aulaId, bimestre, courseId]);
 
+  useEffect(() => {
+    if (!setCourseChromeHidden) return undefined;
+
+    setCourseChromeHidden(Boolean(activeQuizSetup));
+
+    return () => {
+      setCourseChromeHidden(false);
+    };
+  }, [activeQuizSetup, setCourseChromeHidden]);
+
   const sortedModules = useMemo(
     () => [...modules].sort((a, b) => (a.id_modulo || 0) - (b.id_modulo || 0)),
     [modules]
@@ -116,6 +128,15 @@ const CourseRetos = ({ aulaId, bimestre, course, courseId }) => {
 
     return challenges;
   };
+
+  if (activeQuizSetup) {
+    return (
+      <QuizModeExperience
+        setup={activeQuizSetup}
+        onBack={() => setActiveQuizSetup(null)}
+      />
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -155,7 +176,10 @@ const CourseRetos = ({ aulaId, bimestre, course, courseId }) => {
         modulesLoading={modulesLoading}
         modulesError={modulesError}
         onClose={() => setSelectedChallenge(null)}
-        onStart={() => setSelectedChallenge(null)}
+        onStart={(setup) => {
+          setSelectedChallenge(null);
+          setActiveQuizSetup(setup);
+        }}
       />
     </div>
   );
