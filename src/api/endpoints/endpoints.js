@@ -10,6 +10,7 @@ export const endpoints = {
   courses: {
     list: '/cursos',
     byId: (id) => `/cursos/${id}`,
+    info: (id, idAula) => `/cursos/${id}/informacion${idAula ? `?id_aula=${idAula}` : ''}`,
     byTeacher: (id) => `/cursos/profesores/${id}/cursos`,
   },
   classrooms: {

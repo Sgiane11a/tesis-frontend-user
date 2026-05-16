@@ -1,73 +1,133 @@
 import React from 'react';
+import { BookOpen, CalendarClock, CheckCircle2, GraduationCap, Mail, UserRound } from 'lucide-react';
+import { useCourseInfo } from '../../../../../hooks/useCourses';
 
-const CourseInfo = () => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-800 mb-3">Información del Curso</h2>
+const EmptyText = ({ children = 'Sin informacion registrada.' }) => (
+  <p className="text-sm leading-relaxed text-gray-500">{children}</p>
+);
 
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Título</h3>
-          <p className="text-gray-600">Historia del Perú - 1er Año</p>
-        </div>
+const InfoBlock = ({ title, children }) => (
+  <section className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <h3 className="text-sm font-semibold text-gray-800">{title}</h3>
+    <div className="mt-2">{children}</div>
+  </section>
+);
 
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Código</h3>
-          <p className="text-gray-600">HIS-101</p>
-        </div>
+const DetailRow = ({ icon: Icon, label, value }) => (
+  <div className="flex items-start gap-3 rounded-lg bg-gray-50 px-3 py-2">
+    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-sky-600" />
+    <div>
+      <p className="text-xs font-semibold uppercase text-gray-400">{label}</p>
+      <p className="text-sm font-semibold text-gray-700">{value || '-'}</p>
+    </div>
+  </div>
+);
 
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Descripción</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">Este curso ofrece un análisis crítico y sistemático del proceso histórico del Perú desde las civilizaciones prehispánicas hasta la conformación del Estado moderno. Se pone énfasis en los factores culturales, sociales, económicos y políticos que han determinado las transformaciones regionales y nacionales.</p>
-        </div>
-
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Objetivos</h3>
-          <ul className="list-disc list-inside text-gray-600 text-sm">
-            <li>Comprender las principales etapas de la historia del Perú y sus procesos causales.</li>
-            <li>Analizar fuentes primarias y secundarias con criterios historiográficos.</li>
-            <li>Desarrollar habilidades de síntesis escrita y argumentación histórica.</li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-medium text-gray-700">Evaluación</h3>
-          <p className="text-gray-600 text-sm">La evaluación contempla pruebas escritas (50%), trabajos de investigación y presentaciones (30%) y participación en actividades y foros (20%).</p>
-        </div>
+const TeacherCard = ({ teacher, officeHours }) => (
+  <article className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <div className="flex items-start gap-3">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sky-50 text-sky-700">
+        {teacher?.avatarUrl ? (
+          <img src={teacher.avatarUrl} alt={teacher.name} className="h-full w-full object-cover" />
+        ) : (
+          <UserRound className="h-6 w-6" />
+        )}
       </div>
+      <div className="min-w-0">
+        <h3 className="font-semibold text-gray-800">{teacher?.name || 'Profesor asignado'}</h3>
+        <p className="text-sm text-gray-500">{teacher?.email || 'Correo no registrado'}</p>
+      </div>
+    </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-        <h2 className="text-xl font-semibold text-gray-800 mb-3">Información del Profesor a Cargo</h2>
+    {teacher?.bio ? (
+      <p className="mt-4 text-sm leading-relaxed text-gray-600">{teacher.bio}</p>
+    ) : (
+      <EmptyText>El profesor aun no registro biografia.</EmptyText>
+    )}
 
-        <div className="flex items-start gap-4 mb-4">
-          <div className="w-24 h-24 rounded-full bg-sky-100 flex items-center justify-center overflow-hidden">
-            {/* placeholder avatar */}
-            <svg className="w-12 h-12 text-sky-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M4 20c0-3.314 2.686-6 6-6h4c3.314 0 6 2.686 6 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+    <div className="mt-4 grid gap-2">
+      <DetailRow icon={Mail} label="Contacto" value={teacher?.phone || teacher?.email} />
+      <DetailRow icon={CalendarClock} label="Horario de atencion" value={officeHours} />
+    </div>
+  </article>
+);
+
+const CourseInfo = ({ course: fallbackCourse }) => {
+  const courseId = fallbackCourse?.id;
+  const aulaId = fallbackCourse?.idAula;
+  const { data, isLoading, isError, error } = useCourseInfo(courseId, aulaId);
+  const course = data?.course || fallbackCourse || {};
+  const teachers = data?.teachers?.length ? data.teachers : (course.teacher ? [course.teacher] : []);
+  const classroom = data?.classroom || {
+    grado: course.grado,
+    seccion: course.seccion,
+  };
+  const aulaLabel = classroom?.grado && classroom?.seccion ? `${classroom.grado} - ${classroom.seccion}` : 'Sin aula asignada';
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2">
+        {[0, 1, 2, 3].map((item) => (
+          <div key={item} className="h-40 animate-pulse rounded-lg bg-gray-100" />
+        ))}
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-lg border border-red-100 bg-red-50 p-4 text-sm text-red-700">
+        {error?.message || 'No se pudo cargar la informacion del curso.'}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <section className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
+              <BookOpen className="h-3.5 w-3.5" />
+              Informacion del curso
+            </div>
+            <h2 className="mt-3 text-2xl font-bold text-gray-800">{course.title || 'Curso seleccionado'}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+              {course.description || 'Este curso aun no tiene descripcion registrada.'}
+            </p>
           </div>
-
-          <div>
-            <div className="text-gray-800 font-medium">Alfredo Porras Zapata</div>
-            <div className="text-sm text-gray-500">Profesor Titular - Departamento de Historia</div>
+          <div className="grid min-w-[220px] gap-2 sm:grid-cols-2 lg:grid-cols-1">
+            <DetailRow icon={GraduationCap} label="Aula" value={aulaLabel} />
+            <DetailRow icon={CheckCircle2} label="Codigo" value={course.id ? `CUR-${course.id}` : null} />
           </div>
         </div>
+      </section>
 
-        <div className="mb-3 text-sm text-gray-600">
-          <div><strong>Contacto:</strong> +51 999 999 999</div>
-          <div><strong>Email:</strong> alfredo.porras@gmail.com</div>
+      <div className="grid gap-4 xl:grid-cols-[1fr_340px]">
+        <div className="grid gap-4 md:grid-cols-2">
+          <InfoBlock title="Objetivos">
+            {course.objectives ? <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{course.objectives}</p> : <EmptyText />}
+          </InfoBlock>
+          <InfoBlock title="Metodologia">
+            {course.methodology ? <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{course.methodology}</p> : <EmptyText />}
+          </InfoBlock>
+          <InfoBlock title="Criterios de evaluacion">
+            {course.evaluationCriteria ? <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{course.evaluationCriteria}</p> : <EmptyText />}
+          </InfoBlock>
+          <InfoBlock title="Requisitos">
+            {course.requirements ? <p className="whitespace-pre-line text-sm leading-relaxed text-gray-600">{course.requirements}</p> : <EmptyText />}
+          </InfoBlock>
         </div>
 
-        <div className="mb-3">
-          <h3 className="text-sm font-medium text-gray-700">Biografía</h3>
-          <p className="text-gray-600 text-sm leading-relaxed">El profesor Alfredo Porras posee más de 15 años de experiencia en docencia universitaria e investigación histórica. Sus líneas de trabajo incluyen historia social y política del Perú republicano, análisis de fuentes primarias y metodologías de investigación histórica. Ha publicado múltiples artículos y dirigido proyectos de memoria histórica en comunidades rurales.</p>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-medium text-gray-700">Horario de atención</h3>
-          <p className="text-gray-600 text-sm">Lunes y miércoles de 17:00 a 19:00 (modalidad virtual).</p>
-        </div>
+        <aside className="space-y-4">
+          {teachers.length > 0 ? (
+            teachers.map((teacher) => (
+              <TeacherCard key={teacher.id || teacher.email || teacher.name} teacher={teacher} officeHours={course.officeHours} />
+            ))
+          ) : (
+            <TeacherCard teacher={null} officeHours={course.officeHours} />
+          )}
+        </aside>
       </div>
     </div>
   );

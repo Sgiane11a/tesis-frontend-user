@@ -46,7 +46,7 @@ const StudentsTable = ({ students, loading, error, onViewStudent }) => (
           {!loading && !error && students.map((student) => (
             <tr key={student.id} className="hover:bg-sky-50/40 transition-colors">
               <td className="px-6 py-3">
-                <StudentAvatar />
+                <StudentAvatar name={student.name} src={student.avatarUrl} />
               </td>
               <td className="px-4 py-3">
                 <div className="font-medium text-gray-700">{student.name}</div>

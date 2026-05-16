@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CoursesService } from '../api'
 import { useAuth } from './useAuth'
 
@@ -7,6 +7,7 @@ export const courseKeys = {
   all: ['courses'],
   byStudent: (id) => ['courses', 'student', id],
   byTeacher: (id) => ['courses', 'teacher', id],
+  info: (courseId, aulaId) => ['courses', 'info', courseId, aulaId ?? null],
 }
 
 /**
@@ -53,5 +54,27 @@ export function useAllCourses() {
     queryFn: () => CoursesService.getAll(),
     staleTime: 5 * 60 * 1000,
     retry: 2,
+  })
+}
+
+export function useCourseInfo(courseId, aulaId) {
+  return useQuery({
+    queryKey: courseKeys.info(courseId, aulaId),
+    queryFn: () => CoursesService.getInfo(courseId, aulaId),
+    enabled: !!courseId,
+    staleTime: 2 * 60 * 1000,
+    retry: 1,
+  })
+}
+
+export function useUpdateCourseInfo(courseId, aulaId) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (payload) => CoursesService.updateInfo(courseId, aulaId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: courseKeys.info(courseId, aulaId) })
+      queryClient.invalidateQueries({ queryKey: courseKeys.all })
+    },
   })
 }

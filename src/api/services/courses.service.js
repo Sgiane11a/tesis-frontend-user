@@ -1,6 +1,6 @@
 import apiClient from '../client/index.js'
 import { endpoints } from '../endpoints/endpoints.js'
-import { backendToCourseList } from '../mappers/courses.mapper.js'
+import { backendToCourseInfo, backendToCourseList } from '../mappers/courses.mapper.js'
 
 export const CoursesService = {
   /**
@@ -40,5 +40,18 @@ export const CoursesService = {
       profesor: data.profesor ?? null,
       cursos: backendToCourseList(data.cursos_impartidos),
     }
+  },
+
+  async getInfo(courseId, aulaId) {
+    const data = await apiClient(endpoints.courses.info(courseId, aulaId))
+    return backendToCourseInfo(data)
+  },
+
+  async updateInfo(courseId, aulaId, payload) {
+    const data = await apiClient(endpoints.courses.info(courseId, aulaId), {
+      method: 'PUT',
+      data: payload,
+    })
+    return backendToCourseInfo(data)
   },
 }

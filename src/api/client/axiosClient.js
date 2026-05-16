@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
     if (error.response) {
       const status = error.response.status
 
-      if ((status === 401 || status === 403) && !isPublicRequest(error.config)) {
+      if (status === 401 && !isPublicRequest(error.config)) {
         sessionStorage.removeItem('user')
         sessionStorage.removeItem('token')
         window.location.href = '/login'

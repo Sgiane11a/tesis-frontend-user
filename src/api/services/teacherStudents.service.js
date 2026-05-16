@@ -1,6 +1,7 @@
 import apiClient from '../client/index.js';
 import { endpoints } from '../endpoints/endpoints.js';
 import { buildStableStudentMetrics } from '../../roles/teacher/mocks/studentPerformance.mock.js';
+import { resolveAssetUrl } from '../utils/assetUrl.js';
 
 const backendToTeacherStudent = (raw) => {
   const id = raw?.id_usuario ?? raw?.id ?? null;
@@ -10,6 +11,7 @@ const backendToTeacherStudent = (raw) => {
     id,
     name,
     email: raw?.correo ?? '',
+    avatarUrl: resolveAssetUrl(raw?.url_foto),
     ...buildStableStudentMetrics(id),
   };
 };
