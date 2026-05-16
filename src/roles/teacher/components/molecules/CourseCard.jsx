@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Users, BarChart3, ArrowRight, GraduationCap } from 'lucide-react';
 import { Card, Text, ProgressBar, Badge } from '../atoms';
-import { StudentListModal } from './StudentListModal';
 
 const gradoLabels = {
   1: '1er Año',
@@ -14,7 +13,6 @@ const gradoLabels = {
 
 const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, studentCount = 0, averageScore = 0, progress = 0 }) => {
   const navigate = useNavigate();
-  const [showStudentsModal, setShowStudentsModal] = useState(false);
 
   const handleEnter = () => {
     navigate(`/teacher/dashboard/course/${id}${idAula ? `?aula=${idAula}` : ''}`);
@@ -22,7 +20,7 @@ const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, 
 
   const handleStudentsClick = (e) => {
     e.stopPropagation();
-    setShowStudentsModal(true);
+    navigate(`/teacher/dashboard/course/${id}/modulos/estudiantes${idAula ? `?aula=${idAula}` : ''}`);
   };
 
   const gradoLabel = grado ? (gradoLabels[grado] || `${grado}° Año`) : null;
@@ -107,13 +105,6 @@ const CourseCard = ({ id, title, description, imageUrl, grado, seccion, idAula, 
         </div>
       </Card>
 
-      {/* Modal de lista de alumnos */}
-      <StudentListModal 
-        isOpen={showStudentsModal}
-        onClose={() => setShowStudentsModal(false)}
-        courseTitle={title}
-        studentCount={studentCount}
-      />
     </div>
   );
 };

@@ -7,24 +7,6 @@ export const courseInfoObjectives = [
   'Preparar evidencias de aprendizaje por bimestre.',
 ];
 
-export const courseInfoEvaluationCriteria = [
-  { label: 'Participacion', value: '20%' },
-  { label: 'Retos y quizzes', value: '35%' },
-  { label: 'Evidencia final', value: '30%' },
-  { label: 'Refuerzo', value: '15%' },
-];
-
-export const courseInfoActivity = [
-  { title: 'Modulo publicado', detail: 'Material disponible para revision del aula.', time: 'Hoy' },
-  { title: 'Revision sugerida', detail: 'Hay estudiantes que necesitan seguimiento.', time: 'Esta semana' },
-  { title: 'Recurso pendiente', detail: 'Puedes agregar una actividad de salida al ultimo modulo.', time: 'Sugerencia' },
-];
-
-export const courseInfoAiRecommendations = [
-  'Crea un quiz corto para medir comprension del tema actual.',
-  'Prepara una ficha de refuerzo para estudiantes con menor avance.',
-];
-
 export const buildCourseInfoStats = (course) => {
   const studentCount = Number(course?.studentCount || 0);
   const moduleCount = Math.max(3, Math.min(8, Math.ceil(studentCount / 8) || 4));
